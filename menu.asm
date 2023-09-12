@@ -1,18 +1,31 @@
 menu:
 	// Make screen black and text white
-	lda #$00 	// Load color black (0) into accumulator
-	sta $d020	// Store black in border collor address (0xd020)
-	sta $d021	// Also store black in background color address (0xd021)
-	lda #$01	// Load color white (1) into accumulator
-	sta $0286	// Store white into cursor color address (0x0286)
-	jmp game
+	lda #$01 	// Load white color
+	sta $d020	// Store color on border (0xd020)
+	sta $d021	// Store color on background (0xd021)
+
+	lda #$00	// Load black color
+	sta $0286	// Store color on cursor (0x0286)
 
 	// Clear the screen and jump to draw routine 
-	jsr $e544		// call screen function to clear screen	
+	//jsr $e544		// call screen function to clear screen	
 	jsr draw_text	// call (jump sub routine = jsr) draw text routine
 
 menu_loop:
-	jmp *
+	lda joystick_buf
+	and #$10 // Only care about the fifth bit (fire button)
+	cmp #$10
+	beq menu_loop
+
+
+	lda #$00 	// Load white color
+	sta $d020	// Store color on border (0xd020)
+	sta $d021	// Store color on background (0xd021)
+
+	lda #$01	// Load black color
+	sta $0286	// Store color on cursor (0x0286)
+	jmp game
+
 
 msg:
 	.text "           substrate rampage next!      "
