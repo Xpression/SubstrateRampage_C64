@@ -1,5 +1,4 @@
 .label joystick_buf = $5000
-.label tmp = $5001
 
 // this subroutine gets called during IRQ setup, with interrupts disabled
 input_init:
@@ -9,4 +8,6 @@ input_init:
 
 // this subroutine gets called on IRQ
 input_irq:
+	lda $dc00
+	sta joystick_buf
 	rts

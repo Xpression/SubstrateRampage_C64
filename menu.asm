@@ -1,18 +1,14 @@
 menu:
-	lda #$00 	// Load color black (0) into accumulator
-	sta $d020	// Store black in border collor address (0xd020)
-	sta $d021	// Also store black in background color address (0xd021)
-	jmp *
-
 	// Make screen black and text white
 	lda #$00 	// Load color black (0) into accumulator
 	sta $d020	// Store black in border collor address (0xd020)
 	sta $d021	// Also store black in background color address (0xd021)
 	lda #$01	// Load color white (1) into accumulator
 	sta $0286	// Store white into cursor color address (0x0286)
+	jmp game
 
-	// Clear the screen and jump to draw routine
-	jsr $e544		// call (jump sub routine = jsr) screen function to clear screen
+	// Clear the screen and jump to draw routine 
+	jsr $e544		// call screen function to clear screen	
 	jsr draw_text	// call (jump sub routine = jsr) draw text routine
 
 menu_loop:
