@@ -13,7 +13,7 @@ start:
 	jmp menu
 
 setup_irq:  
-	sei 			// disable interrupts
+	sei 			// disable irq while configuring
 
 	lda #$35 		// RAM visible at $A000-$BFFF and $E000-$FFFF
 	sta $01  		// I/O area visible at $D000-$DFFF
@@ -30,18 +30,17 @@ setup_irq:
 	lda #$81 		
 	sta $d01a 		
 
-	lda #$7f 		// enable all interrupts
+	lda #$7f 		// setup interrupt control
 	sta $dc0d 		
 	sta $dd0d 		
 
-	lda $dc0d 		// read interrupts
+	lda $dc0d 		// read and ack current interrupt state
 	lda $dd0d
-
-	lda #$ff 		// acknowledge interrupts
+	lda #$ff
 	sta $d019 		
 
-	cli 			// enable interrupts
-	rts 			// return from subroutine
+	cli 			// re-enable irq signals
+	rts 
 
 //----------------------------------------------------------
 main_irq:  		
