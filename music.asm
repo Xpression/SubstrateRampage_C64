@@ -5,25 +5,8 @@
 
 music_init:
 	lda #$00
-	sta $d020
-	sta $d021
-	lda #$00
 	jsr music_load
 
 music_irq:
-	pha
-	txa
-	pha
-	tya
-	pha
-	lda #$ff
-	sta	$d019
-
 	jsr music_play
-
-	pla
-	tay
-	pla
-	tax
-	pla
 	rts

@@ -8,11 +8,14 @@
 
 start:
 	jsr music_init
+	jsr input_init
+	
 	jsr setup_irq
 	jmp menu
 
 setup_irq:  
-	sei
+	sei 			// disable interrupts
+
 	lda #$35
 	sta $01
 	lda #<main_irq
@@ -34,13 +37,27 @@ setup_irq:
 	lda #$ff
 	sta $d019
 
-	jsr input_init
-
-	cli
-	rts
+	cli 			// enable interrupts
+	rts 			// return from subroutine
 
 //----------------------------------------------------------
 main_irq:  		
+	pha 		// push a, x, and y to stack
+	txa 		// 
+	pha 		// 
+	tya			// 
+	pha 		// 
+
+	lda #$ff 	// acknowledge all interrupts
+	sta	$d019   //
+
 	jsr music_irq
 	jsr input_irq
-	rti
+
+	pla 		// pop y, x, and a from stack
+	tay 		// 
+	pla 		//
+	tax	 		//
+	pla 		// 
+	
+	rti 		// return from interrupt handler

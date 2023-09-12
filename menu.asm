@@ -1,4 +1,7 @@
 menu:
+	lda #$00 	// Load color black (0) into accumulator
+	sta $d020	// Store black in border collor address (0xd020)
+	sta $d021	// Also store black in background color address (0xd021)
 	jmp *
 
 	// Make screen black and text white
