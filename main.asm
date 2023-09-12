@@ -43,4 +43,5 @@ setup_irq:
 //----------------------------------------------------------
 main_irq:  		
 	jsr music_irq
+	jsr game_irq
 	rti
