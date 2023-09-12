@@ -1,20 +1,17 @@
 :BasicUpstart2(start)
 * = $4000 "Main Program"
 
-#import "menu.asm"
 #import "game.asm"
+#import "input.asm"
+#import "menu.asm"
 #import "music.asm"
 
 start:
+	jsr music_init
 	jsr setup_irq
-	jmp *
+	jmp menu
 
 setup_irq:  
-	lda #$00
-	sta $d020
-	sta $d021
-	lda #$00
-	jsr music_init
 	sei
 	lda #$35
 	sta $01
@@ -37,11 +34,13 @@ setup_irq:
 	lda #$ff
 	sta $d019
 
+	jsr input_init
+
 	cli
 	rts
 
 //----------------------------------------------------------
 main_irq:  		
 	jsr music_irq
-	jsr game_irq
+	jsr input_irq
 	rti
