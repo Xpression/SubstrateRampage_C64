@@ -2,7 +2,7 @@
 
 // this subroutine gets called during IRQ setup, with interrupts disabled
 input_init:
-	lda #$00
+	lda #$ff
 	sta joystick_buf
 	rts
 
