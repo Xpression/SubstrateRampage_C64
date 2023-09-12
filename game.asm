@@ -1,8 +1,13 @@
+
+// The game entry point
 game:
+	jsr init_sprite_one
+
+// The game loop
+game_loop:
 	// Reset border color variable to black
 	lda #$00
 	sta $d020
-
 	
 // Section for checking input and acting on it
 chk_f_pressed:
@@ -49,7 +54,7 @@ wait:
 	dex
 	cpx #$ff
 	bne wait
-    jmp game
+    jmp game_loop
 
 game_over:
 	jmp menu

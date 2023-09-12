@@ -5,6 +5,7 @@
 #import "input.asm"
 #import "menu.asm"
 #import "music.asm"
+#import "graphics.asm"
 
 start:
 	jsr music_init
