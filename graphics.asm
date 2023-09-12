@@ -33,6 +33,8 @@
 		 	.byte %00000000, %00000000, %00000000 	
 			.byte $00
 
+.label sprite_num_buf = $5005
+.label sprite_dir_buf = $5006
 
 init_sprite_one:
 	// Set pointer to sprite one data
@@ -50,29 +52,25 @@ init_sprite_one:
 
 	rts
 
-// x-register contains sprite number
-// y-register contains direction: x = 0x00, y = 0x01
-//increment_sprite_position:
+increment_sprite_position:
 
-	//sty $2999
-	
-	// Find the offset of the sprite number
-	//txa       // Load first operand into the accumulator.
-	//cld        // Clear the carry flag so it does not get added into the result
-	//adc $2999      // Add the other operand
-	//tax ///sta x      // Store the operand back to x
+	// Find the offset of the sprite number and transfer to x-reg
+	lda $5005
+	clc
+	adc $5006
+	tax
 
 	// load the value of the given sprite's x or y coordinate
-	//ldy sprite_one, x
+	ldy $d000, x
 
 	// Increment the value
-	//iny
+	iny
 
 	// store the incremented value back
-	//tya
-	//sta sprite_one, x
+	tya
+	sta $d000, x
 
-//	rts
+	rts
 
 
 

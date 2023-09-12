@@ -75,9 +75,10 @@ handle_right_pressed:
 	lda #$07 // yellow
 	sta $d020
 
-	//ldx #$00
-	//ldy #$00
-	//jsr increment_sprite_position
+	lda #$00
+	sta sprite_num_buf
+	sta sprite_dir_buf
+	jsr increment_sprite_position
 
 	rts
 
@@ -85,9 +86,11 @@ handle_up_pressed:
 	lda #$08 // orange
 	sta $d020
 
-	//ldx #$00
-	//ldy #$01
-	//jsr increment_sprite_position
+	lda #$00
+	sta sprite_num_buf
+	lda #$01
+	sta sprite_dir_buf
+	jsr increment_sprite_position
 
 	rts
 
