@@ -74,11 +74,21 @@ handle_left_pressed:
 handle_right_pressed:
 	lda #$07 // yellow
 	sta $d020
+
+	//ldx #$00
+	//ldy #$00
+	//jsr increment_sprite_position
+
 	rts
 
 handle_up_pressed:
 	lda #$08 // orange
 	sta $d020
+
+	//ldx #$00
+	//ldy #$01
+	//jsr increment_sprite_position
+
 	rts
 
 handle_down_pressed:

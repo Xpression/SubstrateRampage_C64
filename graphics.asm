@@ -49,3 +49,31 @@ init_sprite_one:
 	sta $d001	// sprite one position y
 
 	rts
+
+// x-register contains sprite number
+// y-register contains direction: x = 0x00, y = 0x01
+//increment_sprite_position:
+
+	//sty $2999
+	
+	// Find the offset of the sprite number
+	//txa       // Load first operand into the accumulator.
+	//cld        // Clear the carry flag so it does not get added into the result
+	//adc $2999      // Add the other operand
+	//tax ///sta x      // Store the operand back to x
+
+	// load the value of the given sprite's x or y coordinate
+	//ldy sprite_one, x
+
+	// Increment the value
+	//iny
+
+	// store the incremented value back
+	//tya
+	//sta sprite_one, x
+
+//	rts
+
+
+
+
