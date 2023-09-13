@@ -52,6 +52,9 @@ init_sprite_one:
 
 	rts
 
+// Subroutine that increments a sprites position.
+// Memory address 0x5005 contains the 0-indexed sprite number [0-7]
+// Memory address 0x5006 contains the direction (x == 0x00, y == 0x01) the sprite postion should be incremented
 increment_sprite_position:
 
 	// Find the offset of the sprite number and transfer to x-reg
@@ -72,6 +75,28 @@ increment_sprite_position:
 
 	rts
 
+// Subroutine that decrements a sprites position.
+// Memory address 0x5005 contains the 0-indexed sprite number [0-7]
+// Memory address 0x5006 contains the direction (x == 0x00, y == 0x01) the sprite postion should be incremented
+decrement_sprite_position:
+
+	// Find the offset of the sprite number and transfer to x-reg
+	lda $5005
+	clc
+	adc $5006
+	tax
+
+	// load the value of the given sprite's x or y coordinate
+	ldy $d000, x
+
+	// decrement the value
+	dey
+
+	// store the incremented value back
+	tya
+	sta $d000, x
+
+	rts
 
 
 
