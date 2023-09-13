@@ -152,21 +152,9 @@ increment_sprite_position:
 	tax
 
 	// load the value of the given sprite's x or y coordinate
-	/*
-	ldy $d000, x
-
-	// Increment the value
-	iny
-
-	// store the incremented value back
-	tya
-	*/
-
-	// load the value of the given sprite's x or y coordinate
 	lda $d000, x
 	clc
 	adc sprite_step_buf
-
 
 	sta $d000, x
 
@@ -185,16 +173,6 @@ decrement_sprite_position:
 	adc sprite_dir_buf
 	tax
 
-	// load the value of the given sprite's x or y coordinate
-	/*
-	ldy $d000, x
-
-	// decrement the value
-	dey
-
-	// store the incremented value back
-	tya
-	*/
 	// load the value of the given sprite's x or y coordinate
 	lda $d000, x
 	sec
