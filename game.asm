@@ -366,43 +366,45 @@ decrement_speed:
 	// If it is negative (MSB set) we increment the LSBs and keep the MSB
 	and #%10000000
 	cmp #%10000000
+	beq inc_lsb_keep_msb
 	
-	
-/*
-	bne sd
-
-	// turns out it was negative (MSB set)
-	// We first mask of the MSB and check whether the step will take us to- or across zero
+	// turns out it was positive (MSB clear)
+	// We first mask of the msb and check whether the step will tak us to- or across zero
 	lda object_speeds, x
 	and #%01111111
 
 	cmp sprite_step_buf
-	bcc icz					// use BCC to branch if the contents of the accumulator is less than that of the memory address
-							
-	// If it wont, then we decrement the LSBs and keep the MSB set
+	bcc dcz 		// use BCC to branch if the contents of the accumulator is less than that of the memory address
+
+	// if it wont, we can simply decrement it
 	sec
 	sbc sprite_step_buf
-	ora #%10000000
 	sta object_speeds, x
-	jmp ise
+	jmp dse
 
-	// If it does, then we first need to decrement to zero using the LSB of object speed, 
-	// The remainder is the new positive speed with MSB cleared
-icz:
+inc_lsb_keep_msb:
+	
+	lda object_speeds, x
+	clc
+	adc sprite_step_buf
+	ora #$10000000
+	sta object_speeds, x
+	jmp dse
+
+dcz:
+
+	// We crossed zero, so we first need to decrement to zero using the LSB of object speed, 
+	// The remainder is the new negative speed with MSB cleared
 	sta tmp // store the LSB speed in tmp
 	lda sprite_step_buf
 	sec
 	sbc tmp
-	sta object_speeds, x
-	jmp ise
 
-// simple decrement
-sd:
-	lda object_speeds, x
-	sec
-	sbc sprite_step_buf
+	// So we need to set the MSB
+	ora #%10000000
+
 	sta object_speeds, x
-*/
+
 // exit
 dse:
 	rts
