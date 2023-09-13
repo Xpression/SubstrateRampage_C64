@@ -2,6 +2,8 @@
 // The game entry point
 game:
 	jsr init_sprite_one
+	jsr init_sprite_two
+	jsr init_sprite_three
 
 // The game loop
 game_loop:
@@ -9,9 +11,26 @@ game_loop:
 	lda #$00
 	sta $d020
 	
-// Section for checking input and acting on it
+	// Check input and act on it
 	jsr joy2_check
 	ldx #$ff
+
+	/*
+	lda #$00
+	sta sprite_num_buf
+	jsr calculate_sprite_collision_coordinates
+
+	lda #$01
+	sta sprite_num_buf
+	jsr calculate_sprite_collision_coordinates
+	
+	lda #$01
+	sta sprite_num_buf
+	jsr calculate_player_sprite_collision
+	//jsr calculate_player_collision
+	*/
+	jsr is_player_sprite_collision
+
 wait:
 	dex
 	cpx #$ff
@@ -58,8 +77,8 @@ handle_fire_pressed:
 	rts
 
 handle_left_pressed:
-	lda #$06 // blue
-	sta $d020
+	//lda #$06 // blue
+	//sta $d020
 
 	lda #$00
 	sta sprite_num_buf
@@ -69,8 +88,8 @@ handle_left_pressed:
 	rts
 
 handle_right_pressed:
-	lda #$07 // yellow
-	sta $d020
+	//lda #$07 // yellow
+	//sta $d020
 
 	lda #$00
 	sta sprite_num_buf
@@ -80,8 +99,8 @@ handle_right_pressed:
 	rts
 
 handle_up_pressed:
-	lda #$08 // orange
-	sta $d020
+	//lda #$08 // orange
+	//sta $d020
 
 	lda #$00
 	sta sprite_num_buf
@@ -92,8 +111,8 @@ handle_up_pressed:
 	rts
 
 handle_down_pressed:
-	lda #$04 // purple
-	sta $d020
+	//lda #$04 // purple
+	//sta $d020
 
 	lda #$00
 	sta sprite_num_buf
