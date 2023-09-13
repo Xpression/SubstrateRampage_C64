@@ -2,7 +2,6 @@
 * = $4000 "Main Program"
 
 #import "dead.asm"
-#import "fader.asm"
 #import "game.asm"
 #import "graphics.asm"
 #import "input.asm"

@@ -2,8 +2,6 @@
 .label menu_flash_nop = $5003
 
 menu:
-	jsr do_fade
-
 	// Make screen black and text white
 	lda #$01 	// Load white color
 	sta $d020	// Store color on border (0xd020)

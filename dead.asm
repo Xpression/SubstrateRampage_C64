@@ -1,6 +1,4 @@
 dead:
-    jsr do_fade
-
     lda #$00
     sta $d020 // border
     sta $d021 // background
