@@ -18,6 +18,7 @@
 
 // The game entry point
 game:
+	jsr clear_screen
 	jsr init_sprite_one
 	jsr init_sprite_two
 	jsr init_sprite_three
@@ -107,7 +108,24 @@ wait:
 	jmp game_loop
 
 game_over:
-	jmp menu
+	// TODO: clean up
+	jmp dead
+
+clear_screen:
+	lda #$00 	// Load black color
+	sta $d020	// Store color on border (0xd020)
+	sta $d021	// Store color on background (0xd021)
+	
+	lda #$20
+	ldx #$00
+!clear_screen:
+	sta $0400,x
+	sta $0500,x
+	sta $0600,x
+	sta $0700,x
+	dex
+	bne !clear_screen-
+	rts
 
 // Subroutine for handling joystick 2 input
 joy2_check:
