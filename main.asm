@@ -71,6 +71,9 @@ main_irq:
 	jsr music_irq
 	jsr input_irq
 
+	lda #$00
+	sta speed_bump
+
 	// acknowledge all interrupts
 	lda #$ff 		
 	sta	$d019
