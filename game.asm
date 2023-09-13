@@ -22,6 +22,20 @@ game:
 	jsr init_sprite_one
 	jsr init_sprite_two
 	jsr init_sprite_three
+	lda #$ff
+
+	// Debounce
+	ldx #$ff
+	ldy #$ff
+debounce_outer:
+debounce:
+	dex
+	cpx #$00
+	bne debounce
+
+	dey
+	cpy #$00
+	bne debounce_outer
 
 // The game loop
 game_loop:
@@ -36,6 +50,17 @@ game_loop:
 	// Check input and act on it
 	jsr joy2_check
 	ldx #$ff
+
+
+	// Move player in x-direction (only up with accelerating speed for now)
+	lda #$00
+	sta sprite_num_buf
+	lda #$01
+	sta sprite_dir_buf
+	ldx #$01
+	lda object_speeds, x
+	sta sprite_step_buf
+	jsr decrement_sprite_position
 
 	// Move enemy one
 	lda #$01
@@ -134,8 +159,19 @@ joy2_check:
 
 // Routines for acting on input from Joystick
 handle_fire_pressed:
+
+	// Need some sort of debounce on fire press
+
 	lda #$05 // Green
 	sta $d020
+
+	// Increment y-speed for player
+	ldx #$01
+	lda object_speeds, x
+	clc
+	adc #$01 // increase speed by 10
+	sta object_speeds, x
+
 	rts
 
 handle_left_pressed:
@@ -168,6 +204,7 @@ handle_up_pressed:
 	//lda #$08 // orange
 	//sta $d020
 
+	/*
 	lda #$00
 	sta sprite_num_buf
 	lda #$01
@@ -175,13 +212,14 @@ handle_up_pressed:
 	lda #$03
 	sta sprite_step_buf
 	jsr decrement_sprite_position
-
+	*/
 	rts
 
 handle_down_pressed:
 	//lda #$04 // purple
 	//sta $d020
 
+	/*
 	lda #$00
 	sta sprite_num_buf
 	lda #$01
@@ -189,5 +227,5 @@ handle_down_pressed:
 	lda #$03
 	sta sprite_step_buf
 	jsr increment_sprite_position
-
+	*/
 	rts

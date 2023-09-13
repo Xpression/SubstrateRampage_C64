@@ -6,6 +6,7 @@ menu:
 	sta $d020	// Store color on border (0xd020)
 	sta $d021	// Store color on background (0xd021)
 	sta $0286	// Store color on cursor (0x0286)
+
 	jsr draw_menu
 
 menu_loop:
