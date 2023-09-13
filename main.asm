@@ -1,16 +1,17 @@
 :BasicUpstart2(start)
 * = $4000 "Main Program"
 
+#import "dead.asm"
+#import "fader.asm"
 #import "game.asm"
+#import "graphics.asm"
 #import "input.asm"
 #import "menu.asm"
 #import "music.asm"
-#import "graphics.asm"
 
 start:
 	jsr init
 	jmp menu
-
 
 init:
 	// disable irq while configuring

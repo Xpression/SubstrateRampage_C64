@@ -83,7 +83,8 @@ wait:
 	jmp game_loop
 
 game_over:
-	jmp menu
+	// TODO: clean up
+	jmp dead
 
 clear_screen:
 	lda #$00 	// Load black color

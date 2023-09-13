@@ -1,4 +1,6 @@
 menu:
+	jsr do_fade
+
 	// Make screen black and text white
 	lda #$01 	// Load white color
 	sta $d020	// Store color on border (0xd020)
@@ -13,10 +15,6 @@ menu_loop:
 	jmp game
 
 
-// ------------------------------------------------------------
-//
-// Make some menu flashy
-//
 // ------------------------------------------------------------
 menu_flash:
 	ldx #$02
@@ -37,10 +35,6 @@ menu_flash:
 	rts
 
 
-// ------------------------------------------------------------
-//
-// Render a static background text for the menu screen.
-//
 // ------------------------------------------------------------
 menu0:	.text "O                                      P"
 	    .text " UCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCI "
