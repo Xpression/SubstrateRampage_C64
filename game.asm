@@ -60,6 +60,12 @@ handle_fire_pressed:
 handle_left_pressed:
 	lda #$06 // blue
 	sta $d020
+
+	lda #$00
+	sta sprite_num_buf
+	sta sprite_dir_buf
+	jsr decrement_sprite_position
+
 	rts
 
 handle_right_pressed:
@@ -81,12 +87,19 @@ handle_up_pressed:
 	sta sprite_num_buf
 	lda #$01
 	sta sprite_dir_buf
-	jsr increment_sprite_position
+	jsr decrement_sprite_position
 
 	rts
 
 handle_down_pressed:
 	lda #$04 // purple
 	sta $d020
+
+	lda #$00
+	sta sprite_num_buf
+	lda #$01
+	sta sprite_dir_buf
+	jsr increment_sprite_position
+
 	rts
 
