@@ -10,7 +10,6 @@ menu:
 	jsr clear_screen
 	jsr draw_text
 
-
 menu_loop:
 	jsr cmp_joy2_fire
 	bne menu_loop
