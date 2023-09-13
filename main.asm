@@ -8,59 +8,79 @@
 #import "graphics.asm"
 
 start:
+	jsr init
+	jmp menu
+
+
+init:
+	// disable irq while configuring
+	sei 		
+	
+	// RAM visible at $A000-$BFFF and $E000-$FFFF
+	// I/O area visible at $D000-$DFFF	
+	lda #$35
+	sta $01  
+
 	jsr music_init
 	jsr input_init
 	jsr setup_irq
-	jmp menu
+
+	// read and ack current interrupt state
+	lda $dc0d 		
+	lda $dd0d
+	lda #$ff
+	sta $d019 		
+
+	// re-enable irq signals
+	cli 
+	rts
+
 
 setup_irq:  
-	sei 			// disable irq while configuring
-
-	lda #$35 		// RAM visible at $A000-$BFFF and $E000-$FFFF
-	sta $01  		// I/O area visible at $D000-$DFFF
-
-	lda #<main_irq 	// store address of irq subroutine
+	// store address of irq subroutine
+	lda #<main_irq 	
 	sta $fffe
 	lda #>main_irq
 	sta $ffff
 
-	lda #$1b 		// configure screen-based interrupts
+	// configure screen-based interrupts
+	lda #$1b 		
 	sta $d011 		
 	lda #$80
 	sta $d012  		
 	lda #$81 		
 	sta $d01a 		
 
-	lda #$7f 		// setup interrupt control
+	// setup interrupt control
+	lda #$7f 		
 	sta $dc0d 		
 	sta $dd0d 		
 
-	lda $dc0d 		// read and ack current interrupt state
-	lda $dd0d
-	lda #$ff
-	sta $d019 		
-
-	cli 			// re-enable irq signals
+	// return
 	rts 
 
 //----------------------------------------------------------
 main_irq:  		
-	pha 		// push a, x, and y to stack
-	txa 		// 
-	pha 		// 
-	tya			// 
-	pha 		// 
+	// push a, x, and y to stack
+	pha		
+	txa
+	pha
+	tya
+	pha
 
 	jsr music_irq
 	jsr input_irq
 
-	lda #$ff 	// acknowledge all interrupts
-	sta	$d019   //
+	// acknowledge all interrupts
+	lda #$ff 		
+	sta	$d019
 
-	pla 		// pop y, x, and a from stack
-	tay 		// 
-	pla 		//
-	tax	 		//
-	pla 		// 
+	// pop y, x, and a from stack
+	pla
+	tay
+	pla
+	tax
+	pla
 	
-	rti 		// return from interrupt handler
+	// return from interrupt handler
+	rti 		
