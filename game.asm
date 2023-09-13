@@ -1,4 +1,6 @@
 
+.label speed_bump = $5001
+
 // The game entry point
 game:
 	jsr init_sprite_one
@@ -7,6 +9,10 @@ game:
 
 // The game loop
 game_loop:
+
+	lda #$ff
+	sta speed_bump
+
 	// Reset border color variable to black
 	lda #$00
 	sta $d020
@@ -15,27 +21,14 @@ game_loop:
 	jsr joy2_check
 	ldx #$ff
 
-	/*
-	lda #$00
-	sta sprite_num_buf
-	jsr calculate_sprite_collision_coordinates
-
-	lda #$01
-	sta sprite_num_buf
-	jsr calculate_sprite_collision_coordinates
-	
-	lda #$01
-	sta sprite_num_buf
-	jsr calculate_player_sprite_collision
-	//jsr calculate_player_collision
-	*/
 	jsr is_player_sprite_collision
 
 wait:
-	dex
-	cpx #$ff
-	bne wait
-    jmp game_loop
+	lda speed_bump
+	cmp #$ff
+	beq wait
+
+	jmp game_loop
 
 game_over:
 	jmp menu
