@@ -17,20 +17,20 @@
 		 	.byte %00001111, %11111111, %11110000 	
 		 	.byte %00011111, %11111111, %11111000 	
 		 	.byte %00111111, %11111111, %11111100 	
-		 	.byte %00000011, %11111111, %11000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
+		 	.byte %01111111, %11111111, %11111110 	
+		 	.byte %00000000, %11111111, %11111100 	
+		 	.byte %00000000, %11111111, %00000000 	
+		 	.byte %00000000, %11111111, %00000000 	
+		 	.byte %00000000, %11111111, %00000000 	
+		 	.byte %00000000, %11111111, %00000000 	
+		 	.byte %00000000, %11111111, %00000000 	
+		 	.byte %00000000, %11111111, %00000000 	
+		 	.byte %00000000, %11111111, %00000000 	
+		 	.byte %00000000, %11111111, %00000000 	
+		 	.byte %00000000, %11111111, %00000000 	
+		 	.byte %00000000, %11111111, %00000000 	
+		 	.byte %00000000, %11111111, %00000000 	
+		 	.byte %00000000, %11111111, %00000000 	
 			.byte $00
 			// Sprite data two at 0x3040
 			
@@ -43,20 +43,45 @@
 		 	.byte %11111111, %11111111, %11111111 	
 		 	.byte %11111111, %11111111, %11111111 	
 		 	.byte %11111111, %11111111, %11111111 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-		 	.byte %00000000, %00000000, %00000000 	
-			.byte $00
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111	
+			.byte %11111111
 			
+
+			// Sprite three at 0x3040
+			
+			.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111	
+			.byte %11111111
 
 .label sprite_num_buf = $5005
 .label sprite_dir_buf = $5006
@@ -86,7 +111,6 @@ init_sprite_two:
 	// Enable sprite two
 	lda $d015
 	ora #%00000010
-	//lda #%00000011 // <-- we need to be smarter here on which sprites are enabled and which are not
 	sta $d015 // sprite enable register
 
 	// Set position of sprite two
@@ -96,6 +120,22 @@ init_sprite_two:
 
 	rts
 
+init_sprite_three:
+	// Set pointer to two one data
+	lda #$0c2 // 0x3080 / 0x40 => 0xc2
+	sta sprite_three
+
+	// Enable sprite two
+	lda $d015
+	ora #%00000100
+	sta $d015 // sprite enable register
+
+	// Set position of sprite three
+	lda #$b0 	
+	sta $d004	// sprite two position x
+	sta $d005	// sprite two position y
+
+	rts
 
 // Subroutine that increments a sprites position.
 // Memory address 0x5005 contains the 0-indexed sprite number [0-7]
@@ -103,9 +143,10 @@ init_sprite_two:
 increment_sprite_position:
 
 	// Find the offset of the sprite number and transfer to x-reg
-	lda $5005
+	lda sprite_num_buf
+	asl // multiply by two
 	clc
-	adc $5006
+	adc sprite_dir_buf
 	tax
 
 	// load the value of the given sprite's x or y coordinate
@@ -126,9 +167,10 @@ increment_sprite_position:
 decrement_sprite_position:
 
 	// Find the offset of the sprite number and transfer to x-reg
-	lda $5005
+	lda sprite_num_buf
+	asl // multiply by two
 	clc
-	adc $5006
+	adc sprite_dir_buf
 	tax
 
 	// load the value of the given sprite's x or y coordinate
@@ -143,5 +185,19 @@ decrement_sprite_position:
 
 	rts
 
+is_player_sprite_collision:
 
+	lda $D01E //;Read hardware sprite/sprite collision
+    and #$1
+    cmp #$1
+	beq collision
+    rts
 
+collision:
+	inc $D020
+	dex
+	cpx #$ff
+	bne collision
+
+nocollision:
+	rts
