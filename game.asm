@@ -90,11 +90,8 @@ clear_screen:
 	sta $d020	// Store color on border (0xd020)
 	sta $d021	// Store color on background (0xd021)
 	
-	lda #$01	// Load white color
-	sta $0286	// Store color on cursor (0x0286)
-	
 	lda #$20
-	ldx #$ff
+	ldx #$00
 !clear_screen:
 	sta $0400,x
 	sta $0500,x
