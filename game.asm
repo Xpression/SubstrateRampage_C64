@@ -2,6 +2,7 @@
 // The game entry point
 game:
 	jsr init_sprite_one
+	jsr init_sprite_two
 
 // The game loop
 game_loop:

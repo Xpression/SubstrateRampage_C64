@@ -9,7 +9,7 @@
 
 .label sprite_data_one = $3000
 
-*=sprite_data_one "Sprite Data" 
+*=sprite_data_one "Sprite Data One" 
 			.byte %00000000, %11111111, %00000000 	
 		 	.byte %00000001, %11111111, %10000000 	
 		 	.byte %00000011, %11111111, %11000000 	
@@ -32,17 +32,42 @@
 		 	.byte %00000000, %00000000, %00000000 	
 		 	.byte %00000000, %00000000, %00000000 	
 			.byte $00
+			// Sprite data two at 0x3040
+			
+			.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %11111111, %11111111, %11111111 	
+		 	.byte %00000000, %00000000, %00000000 	
+		 	.byte %00000000, %00000000, %00000000 	
+		 	.byte %00000000, %00000000, %00000000 	
+		 	.byte %00000000, %00000000, %00000000 	
+		 	.byte %00000000, %00000000, %00000000 	
+		 	.byte %00000000, %00000000, %00000000 	
+		 	.byte %00000000, %00000000, %00000000 	
+		 	.byte %00000000, %00000000, %00000000 	
+		 	.byte %00000000, %00000000, %00000000 	
+		 	.byte %00000000, %00000000, %00000000 	
+		 	.byte %00000000, %00000000, %00000000 	
+		 	.byte %00000000, %00000000, %00000000 	
+			.byte $00
+			
 
 .label sprite_num_buf = $5005
 .label sprite_dir_buf = $5006
 
 init_sprite_one:
 	// Set pointer to sprite one data
-	lda #$0c0
+	lda #$0c0 // 0x3000 / 0x40 => 0xc0
 	sta sprite_one
 
 	// Enable sprite one
-	lda #$01
+	lda #%00000001
 	sta $d015 // sprite enable register
 
 	// Set position of sprite one
@@ -51,6 +76,26 @@ init_sprite_one:
 	sta $d001	// sprite one position y
 
 	rts
+
+
+init_sprite_two:
+	// Set pointer to two one data
+	lda #$0c1 // 0x3040 / 0x40 => 0xc1
+	sta sprite_two
+
+	// Enable sprite two
+	lda $d015
+	ora #%00000010
+	//lda #%00000011 // <-- we need to be smarter here on which sprites are enabled and which are not
+	sta $d015 // sprite enable register
+
+	// Set position of sprite two
+	lda #$50 	
+	sta $d002	// sprite two position x
+	sta $d003	// sprite two position y
+
+	rts
+
 
 // Subroutine that increments a sprites position.
 // Memory address 0x5005 contains the 0-indexed sprite number [0-7]
