@@ -23,13 +23,6 @@ game_loop:
 
 	jsr is_player_sprite_collision
 
-/*
-wait:
-	dex
-	cpx #$ff
-	bne wait
-    jmp game_loop
-*/
 wait:
 	lda speed_bump
 	cmp #$ff
