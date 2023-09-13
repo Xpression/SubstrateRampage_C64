@@ -76,6 +76,8 @@ handle_left_pressed:
 	lda #$00
 	sta sprite_num_buf
 	sta sprite_dir_buf
+	lda #$03
+	sta sprite_step_buf
 	jsr decrement_sprite_position
 
 	rts
@@ -87,6 +89,8 @@ handle_right_pressed:
 	lda #$00
 	sta sprite_num_buf
 	sta sprite_dir_buf
+	lda #$03
+	sta sprite_step_buf
 	jsr increment_sprite_position
 
 	rts
@@ -99,6 +103,8 @@ handle_up_pressed:
 	sta sprite_num_buf
 	lda #$01
 	sta sprite_dir_buf
+	lda #$03
+	sta sprite_step_buf
 	jsr decrement_sprite_position
 
 	rts
@@ -111,7 +117,8 @@ handle_down_pressed:
 	sta sprite_num_buf
 	lda #$01
 	sta sprite_dir_buf
+	lda #$03
+	sta sprite_step_buf
 	jsr increment_sprite_position
 
 	rts
-

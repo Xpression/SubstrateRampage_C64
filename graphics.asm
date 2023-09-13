@@ -85,6 +85,7 @@
 
 .label sprite_num_buf = $5005
 .label sprite_dir_buf = $5006
+.label sprite_step_buf = $5007
 
 init_sprite_one:
 	// Set pointer to sprite one data
@@ -140,6 +141,7 @@ init_sprite_three:
 // Subroutine that increments a sprites position.
 // Memory address 0x5005 contains the 0-indexed sprite number [0-7]
 // Memory address 0x5006 contains the direction (x == 0x00, y == 0x01) the sprite postion should be incremented
+// Memory address 0x5007 contains the step that a sprite should be incremented/decremented
 increment_sprite_position:
 
 	// Find the offset of the sprite number and transfer to x-reg
@@ -150,6 +152,7 @@ increment_sprite_position:
 	tax
 
 	// load the value of the given sprite's x or y coordinate
+	/*
 	ldy $d000, x
 
 	// Increment the value
@@ -157,6 +160,14 @@ increment_sprite_position:
 
 	// store the incremented value back
 	tya
+	*/
+
+	// load the value of the given sprite's x or y coordinate
+	lda $d000, x
+	clc
+	adc sprite_step_buf
+
+
 	sta $d000, x
 
 	rts
@@ -164,6 +175,7 @@ increment_sprite_position:
 // Subroutine that decrements a sprites position.
 // Memory address 0x5005 contains the 0-indexed sprite number [0-7]
 // Memory address 0x5006 contains the direction (x == 0x00, y == 0x01) the sprite postion should be incremented
+// Memory address 0x5007 contains the step that a sprite should be incremented/decremented
 decrement_sprite_position:
 
 	// Find the offset of the sprite number and transfer to x-reg
@@ -174,6 +186,7 @@ decrement_sprite_position:
 	tax
 
 	// load the value of the given sprite's x or y coordinate
+	/*
 	ldy $d000, x
 
 	// decrement the value
@@ -181,6 +194,12 @@ decrement_sprite_position:
 
 	// store the incremented value back
 	tya
+	*/
+	// load the value of the given sprite's x or y coordinate
+	lda $d000, x
+	sec
+	sbc sprite_step_buf
+
 	sta $d000, x
 
 	rts
