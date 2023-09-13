@@ -1,3 +1,6 @@
+.label menu_flash_idx = $5002
+.label menu_flash_nop = $5003
+
 menu:
 	jsr do_fade
 
@@ -9,6 +12,10 @@ menu:
 
 	jsr draw_menu
 
+	lda #$00
+	sta menu_flash_idx
+	sta menu_flash_nop
+
 menu_loop:
 	jsr menu_flash
 	jsr cmp_joy2_fire
@@ -18,21 +25,34 @@ menu_loop:
 
 // ------------------------------------------------------------
 menu_flash:
-	ldx #$02
+	// wait a little
+	inc menu_flash_nop
+	beq !menu_flash+
+	rts
 
 !menu_flash:
-	ldy $d9b8, x
+	// load index of char to flash
+	ldx menu_flash_idx
+
+!menu_flash:
+	// increment color value, rotate at $10
+	ldy $d9ba, x
 	iny
 	cpy #$10
 	bne !menu_flash+
 	ldy #$00
 !menu_flash:
 	tya
-	sta $d9b8, x
+	sta $d9ba, x
 
+	// move to next char to flash
 	inx
-	cpx #$24
-	bne !menu_flash--
+	cpx #$24 // 36 char wide
+	bne !menu_flash+
+	ldx #$00
+!menu_flash:
+	txa
+	sta menu_flash_idx
 	rts
 
 
