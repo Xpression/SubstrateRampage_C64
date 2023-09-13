@@ -9,13 +9,12 @@ menu:
 
 	// Clear the screen and jump to draw routine 
 	//jsr $e544		// call screen function to clear screen	
+	jsr clear_screen
 	jsr draw_text	// call (jump sub routine = jsr) draw text routine
 
 menu_loop:
-	lda joystick_buf
-	and #$10 // Only care about the fifth bit (fire button)
-	cmp #$10
-	beq menu_loop
+	jsr cmp_joy2_fire
+	bne menu_loop
 
 
 	lda #$00 	// Load white color
@@ -26,6 +25,18 @@ menu_loop:
 	sta $0286	// Store color on cursor (0x0286)
 	jmp game
 
+
+clear_screen:
+	lda #$20
+	ldx #$00
+clr_loop:
+	sta $0400,x
+	sta $0500,x
+	sta $0600,x
+	sta $0700,x
+	dex
+	bne clr_loop
+	rts
 
 msg:
 	.text "           substrate rampage next!      "
