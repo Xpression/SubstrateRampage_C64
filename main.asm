@@ -16,7 +16,7 @@ init:
 	sei 		
 	
 	// RAM visible at $A000-$BFFF and $E000-$FFFF
-	// I/O area visible at $D000-$DFFF
+	// I/O area visible at $D000-$DFFF	
 	lda #$35
 	sta $01  
 
