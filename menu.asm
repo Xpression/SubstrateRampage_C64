@@ -37,7 +37,7 @@ menu_flash:
 
 // ------------------------------------------------------------
 menu0:	.text "O                                      P"
-	    .text " UCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCI "
+		.text " UCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCI "
 	    .text " B                                    B "
 	    .text " B                                    B "
 	    .text "                                      B "
@@ -51,7 +51,7 @@ menu2:	.text "                                      B "
     	.text " B                                      "
      	.text " B                                      "
       	.text "                                        "
-menu3:   .text "                                        "
+menu3:  .text "                                        "
 		.text " B                                      "
 	    .text " B                                      "
 	    .text " B                                      "
