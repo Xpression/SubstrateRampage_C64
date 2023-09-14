@@ -1,10 +1,13 @@
-*=music_load "Music"
-.import binary "music.bin"	// <- import is used for importing files (binary, source, c64 or text)	
+*=$1000 "Music"
+.var music = LoadSid("music.sid")
+.fill music.size, music.getData(i)	
 
 music_init:
-	lda #$00
-	jsr music_load
+	ldx #$00
+	ldy #$00
+	lda #music.startSong-1
+	jsr music.init	
 
 music_irq:
-	jsr music_play
+	jsr music.play
 	rts

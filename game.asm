@@ -1,7 +1,11 @@
 // This is a table used for storing object speeds in x- and y-direction
 // This allows us to set speeds for player/enemies, and later read back
 // those values when we want to move them
-*=object_speeds "Object Speed" 
+
+frame_counter:
+	.byte 0
+
+object_speeds:
 	.byte 0, 0 // Player x-speed at 0x500a, Player y-speed at 0x500b
 	.byte 1, 1 // Enemy 1 x-speed at 0x500c, Enemy y-speed at 0x500d
 	.byte 2, 2 // ...
@@ -37,9 +41,7 @@ debounce:
 game_loop:
 
 	// Increase framcounter
-	ldy frame_counter
-	iny
-	sty frame_counter
+	inc frame_counter
 
 	lda #$ff
 	sta speed_bump

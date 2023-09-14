@@ -1,3 +1,9 @@
+menu_flash_pos:
+	.byte $00
+	
+menu_flash_delay:
+	.byte $00
+
 menu:
 	// Make screen black and text white
 	lda #$01 	// Load white color
@@ -8,8 +14,8 @@ menu:
 	jsr draw_menu
 
 	lda #$00
-	sta menu_flash_idx
-	sta menu_flash_nop
+	sta menu_flash_pos
+	sta menu_flash_delay
 
 menu_loop:
 	jsr menu_flash
@@ -21,18 +27,18 @@ menu_loop:
 // ------------------------------------------------------------
 menu_flash:
 	// wait a little
-	inc menu_flash_nop
-	lda menu_flash_nop
+	inc menu_flash_delay
+	lda menu_flash_delay
 	cmp #$40
 	beq !menu_flash+
 	rts
 
 !menu_flash:
 	lda #$00
-	sta menu_flash_nop
+	sta menu_flash_delay
 
 	// load index of char to flash
-	ldx menu_flash_idx
+	ldx menu_flash_pos
 
 !menu_flash:
 	// increment color value, rotate at $10
@@ -52,7 +58,7 @@ menu_flash:
 	ldx #$00
 !menu_flash:
 	txa
-	sta menu_flash_idx
+	sta menu_flash_pos
 	rts
 
 
