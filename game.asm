@@ -150,7 +150,8 @@ wait:
 	jmp game_loop
 
 game_over:
-	// TODO: clean up
+	lda #%00000000 // disable all sprites by clearing all bits in
+	sta $d015      // the sprite enable register
 	jmp dead
 
 clear_screen:
