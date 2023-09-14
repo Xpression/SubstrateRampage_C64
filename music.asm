@@ -1,4 +1,4 @@
-*=music_load "Music"
+*=$1000 "Music"
 .var music = LoadSid("music.sid")
 .fill music.size, music.getData(i)	
 
