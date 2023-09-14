@@ -74,6 +74,12 @@ main_irq:
 	lda #$00
 	sta speed_bump
 
+	//.label frame_counter = $5002
+	ldy frame_counter
+	iny 
+	sty frame_counter
+
+
 	// acknowledge all interrupts
 	lda #$ff 		
 	sta	$d019
