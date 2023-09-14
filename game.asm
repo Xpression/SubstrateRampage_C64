@@ -15,10 +15,38 @@ object_speeds:
 	.byte 0, 0
 	.byte 0, 0
 
+ply_health:
+	.byte $02
+
+draw_health:
+	lda #$53 // hearth icon
+	sta $0400
+	sta $0401
+	sta $0402
+
+	lda #$0b // color gray
+	sta $d800
+	sta $d801
+	sta $d802
+	
+	lda #$02 // color red
+	ldx ply_health
+	cpx #$01
+	beq !draw_health++
+	cmp #$02
+	beq !draw_health+
+	sta $d802
+!draw_health:
+	sta $d801
+!draw_health:
+	sta $d800
+	rts
+
 
 // The game entry point
 game:
 	jsr clear_screen
+	jsr draw_health
 	jsr init_sprite_one
 	jsr init_sprite_two
 	jsr init_sprite_three
