@@ -166,19 +166,8 @@ decrement_sprite_position:
 
 	rts
 
-is_player_sprite_collision:
-
-	lda $D01E //;Read hardware sprite/sprite collision
-    and #$1
-    cmp #$1
-	beq collision
+cmp_player_collision:
+	lda $d01e // read hardware sprite-sprite collision register
+    and #$01  // mask to player only
+    cmp #$01  // check collision
     rts
-
-collision:
-	inc $D020
-	dex
-	cpx #$ff
-	bne collision
-
-nocollision:
-	rts

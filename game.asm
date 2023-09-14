@@ -45,6 +45,12 @@ game_loop:
 	inc frame_counter
 	jsr draw_status
 
+
+	jsr dec_player_shield 	// reduce the shield of a player every game loop
+	//jsr cmp_player_alive	// then check if they are still alive
+	//bne game_over			// if not, go to the game-over screen
+
+
 	jsr inc_score // TODO: move this jsr to where score should increase
 
 	// Decrease boost counter if greater than or equal to one
@@ -129,7 +135,10 @@ enemy_movement:
 
 */
 
-	jsr is_player_sprite_collision
+	jsr cmp_player_collision
+	bne no_collision
+	jsr dec_player_health
+no_collision:
 
 // Busy wait on speed bump
 wait:
