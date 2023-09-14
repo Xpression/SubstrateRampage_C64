@@ -108,6 +108,13 @@ draw_menu:
 	lda menu4, x
 	sta $0720, x
 
+    lda #$00
+    sta $d800, x
+    sta $d8c8, x
+    sta $d990, x
+    sta $da58, x
+    sta $db20, x
+
 	inx
 	cpx #$c8
 	bne !draw_menu-
