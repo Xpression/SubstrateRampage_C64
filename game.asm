@@ -1,6 +1,10 @@
 // This is a table used for storing object speeds in x- and y-direction
 // This allows us to set speeds for player/enemies, and later read back
 // those values when we want to move them
+
+frame_counter:
+	.byte 0
+
 object_speeds:
 	.byte 0, 0 // Player x-speed at 0x500a, Player y-speed at 0x500b
 	.byte 1, 1 // Enemy 1 x-speed at 0x500c, Enemy y-speed at 0x500d
@@ -36,6 +40,9 @@ debounce:
 // The game loop
 game_loop:
 
+	// Increase framcounter
+	inc frame_counter
+
 	lda #$ff
 	sta speed_bump
 
@@ -46,7 +53,6 @@ game_loop:
 	// Check input and act on it
 	jsr joy2_check
 	ldx #$ff
-
 
 	// Move player in y-direction
 	jsr apply_gravity
@@ -59,7 +65,7 @@ game_loop:
 	and #%10000000
 	cmp #%10000000
 	bne hola
-
+	
 	//otherwise, decrement sprite position
 	lda #$00
 	sta sprite_num_buf
@@ -112,7 +118,7 @@ enemy_movement:
 	// First x-direction
 	lda #$00
 	sta sprite_dir_buf
-	ldx #$04
+	ldx #$04 
 	lda object_speeds, x
 	sta sprite_step_buf
 	jsr decrement_sprite_position
@@ -192,21 +198,11 @@ handle_fire_pressed:
 	lda #$05 // Green
 	sta $d020
 
-	/*
-	// Increment y-speed for player
-	ldx #$01
-	lda object_speeds, x
-	clc
-	adc #$01 // increase speed by 10
-	sta object_speeds, x
-	**/
 	jsr boost_player_speed
 
 	rts
 
 handle_left_pressed:
-	//lda #$06 // blue
-	//sta $d020
 
 	lda #$00
 	sta sprite_num_buf
@@ -218,8 +214,6 @@ handle_left_pressed:
 	rts
 
 handle_right_pressed:
-	//lda #$07 // yellow
-	//sta $d020
 
 	lda #$00
 	sta sprite_num_buf
@@ -234,37 +228,19 @@ handle_up_pressed:
 	//lda #$08 // orange
 	//sta $d020
 
-	/*
-	lda #$00
-	sta sprite_num_buf
-	lda #$01
-	sta sprite_dir_buf
-	lda #$03
-	sta sprite_step_buf
-	jsr decrement_sprite_position
-	*/
 	rts
 
 handle_down_pressed:
 	//lda #$04 // purple
 	//sta $d020
 
-	/*
-	lda #$00
-	sta sprite_num_buf
-	lda #$01
-	sta sprite_dir_buf
-	lda #$03
-	sta sprite_step_buf
-	jsr increment_sprite_position
-	*/
 	rts
 
 apply_gravity:
 
-	// Every 0.5 second we should apply gravity, adding to negative speed
-	lda frame_lo
-	and #$19 // 25 = 0x19
+	// Every ~0.25 second we should apply gravity, adding to negative speed
+	lda frame_counter
+	and #$0c //0x0c == 12
 	bne skip_grav
 
 	// load the speed. If it is negative - i.e., moving upwards - (uppermost bit 1) we should apply gravity.
@@ -274,11 +250,11 @@ apply_gravity:
 	cmp #%10000000
 	beq grav
 
-	// It is positive (uppermost bit not set). Check if the lower bits has reached max positive speed (5).
-	// If so we can skip grivity acceleration
+	// It is positive (uppermost bit not set). Check if the lower bits has reached max positive speed (3).
+	// If so we can skip gravity acceleration
 	lda object_speeds, x
-	cmp #$05
-	beq skip_grav
+	cmp #$03
+	bcs skip_grav
 
 grav:
 	// We should apply gravity
@@ -291,31 +267,32 @@ grav:
 	jsr increment_speed
 
 skip_grav:
+
 	rts
 
 
 boost_player_speed:
 	
-	// We are boosting the player speed upwards, so start by decrementing he actual speed
+	// We are boosting the player speed upwards, so start by decrementing the actual speed
 	// Memory address 0x5005 contains the 0-indexed object number [0-7]
 	lda #$00
 	sta sprite_num_buf
 	lda #$01
 	sta sprite_dir_buf
-	lda #$06
+	lda #$01				// <--- The boost speed
 	sta sprite_step_buf
 	jsr decrement_speed
 
-	// We have max cap on speed upwards of 10
+	// We have max cap on speed upwards of 4
 	ldx #$01
 	lda object_speeds, x
-	and #%01111111
-	cmp #$0a
+	and #$01111111
+	cmp #$04
 	bcc boost_exit
 
-	// Speed upwards exceeds 10, so override it back to 10 with MSB set
+	// Speed upwards exceeds 10, so override it back to 5 with MSB set
 	ldx #$01
-	lda %1000101
+	lda #%10000100
 	sta object_speeds, x
 
 boost_exit:
@@ -327,9 +304,9 @@ boost_exit:
 
 
 // Subroutine that increments speed of an object. Manages flipping of MSB in case 0 border is crossed
-// Memory address 0x5005 contains the 0-indexed object number [0-7]
-// Memory address 0x5006 contains the direction (x == 0x00, y == 0x01) the speed should be incremented
-// Memory address 0x5007 contains the step that a speed should be incremented/decremented
+// 'sprite_num_buf' contains the 0-indexed object number [0-7]
+// 'sprite_dir_buf' contains the direction (x == 0x00, y == 0x01) the speed should be incremented
+// 'sprite_step_buf' contains the step that a speed should be incremented
 increment_speed:
 
 	// Load the current speed of the object
@@ -385,9 +362,9 @@ ise:
 
 
 // Subroutine that decrements speed of an object. Manages flipping of MSB in case 0 border is crossed
-// Memory address 0x5005 contains the 0-indexed object number [0-7]
-// Memory address 0x5006 contains the direction (x == 0x00, y == 0x01) the speed should be incremented
-// Memory address 0x5007 contains the step that a speed should be incremented/decremented
+// 'sprite_num_buf' contains the 0-indexed object number [0-7]
+// 'sprite_dir_buf' contains the direction (x == 0x00, y == 0x01) the speed should be decremented
+// 'sprite_step_buf' contains the step that a speed should be decremented
 decrement_speed:
 
 	// Load the current speed of the object
@@ -423,9 +400,12 @@ inc_lsb_keep_msb:
 	//.break
 	lda object_speeds, x
 	and #%01111111
+	//.break
 	clc
 	adc sprite_step_buf
-	ora #$10000000
+	//.break
+	ora #%10000000
+	//.break
 	sta object_speeds, x
 	//.break
 	jmp dse
@@ -440,8 +420,9 @@ dcz:
 
 	// So we need to set the MSB
 	ora #%10000000
-
+ 
 	sta object_speeds, x
+
 // exit
 dse:
 	rts
