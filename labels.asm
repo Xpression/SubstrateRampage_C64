@@ -12,7 +12,7 @@
 .label music_load       = $1000
 .label music_play       = $1003
 
-.label sprite_data_one  = $3000 // 3x64 bytes, to $30c0
+.label sprite_data_one  = $3000 // do not change, value expected by code
 
 .label joy2_buf         = $5000
 .label speed_bump       = $5001
