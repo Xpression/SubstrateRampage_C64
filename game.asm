@@ -25,6 +25,7 @@ game:
 	jsr init_sprite_one
 	jsr init_sprite_two
 	jsr init_sprite_three
+	jsr init_sprite_four
 	lda #$ff
 
 	// Debounce
@@ -83,7 +84,6 @@ skip_boost_counter_dec:
 	jsr apply_gravity
 
 	////// Move player /////////
-	// Player cannot move out of the screen at top
 	jsr handle_player_roof_collision
 	jsr handle_player_rw_collision
 	jsr handle_player_lw_collision
