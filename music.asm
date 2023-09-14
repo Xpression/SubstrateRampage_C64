@@ -1,5 +1,5 @@
 *=$1000 "Music"
-.var music = LoadSid("music_main.sid")
+.var music = LoadSid("menu.sid")
 .fill music.size, music.getData(i)	
 
 music_init:
