@@ -1,6 +1,7 @@
 :BasicUpstart2(start)
 * = $4000 "Main Program"
 
+#import "clock.asm"
 #import "dead.asm"
 #import "game.asm"
 #import "graphics.asm"
@@ -85,11 +86,6 @@ irq:
 
 	lda #$00
 	sta speed_bump
-
-	ldy frame_counter
-	iny 
-	sty frame_counter
-
 
     inc frame_lo
     lda frame_lo

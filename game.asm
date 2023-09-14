@@ -263,7 +263,7 @@ handle_down_pressed:
 apply_gravity:
 
 	// Every 0.5 second we should apply gravity, adding to negative speed
-	lda frame_counter
+	lda frame_lo
 	and #$19 // 25 = 0x19
 	bne skip_grav
 
