@@ -42,10 +42,10 @@ debounce:
 
 // The game loop
 game_loop:
-
-	// Increase framcounter
 	inc frame_counter
-	jsr inc_score
+	jsr draw_status
+
+	jsr inc_score // TODO: move this jsr to where score should increase
 
 	// Decrease boost counter if greater than or equal to one
 	lda boost_counter
@@ -58,8 +58,6 @@ skip_boost_counter_dec:
 
 	lda #$ff
 	sta speed_bump
-
-	jsr draw_status
 
 	// Reset border color variable to black
 	lda #$00
