@@ -124,9 +124,9 @@ init_sprite_three:
 	rts
 
 // Subroutine that increments a sprites position.
-// Memory address 0x5005 contains the 0-indexed sprite number [0-7]
-// Memory address 0x5006 contains the direction (x == 0x00, y == 0x01) the sprite postion should be incremented
-// Memory address 0x5007 contains the step that a sprite should be incremented/decremented
+// 'sprite_num_buf' contains the 0-indexed sprite number [0-7]
+// 'sprite_dir_buf' contains the direction (x == 0x00, y == 0x01) the sprite postion should be incremented
+// 'sprite_step_buf' contains the step that a sprite should be decremented
 increment_sprite_position:
 
 	// Find the offset of the sprite number and transfer to x-reg
@@ -146,9 +146,9 @@ increment_sprite_position:
 	rts
 
 // Subroutine that decrements a sprites position.
-// Memory address 0x5005 contains the 0-indexed sprite number [0-7]
-// Memory address 0x5006 contains the direction (x == 0x00, y == 0x01) the sprite postion should be incremented
-// Memory address 0x5007 contains the step that a sprite should be incremented/decremented
+// 'sprite_num_buf' contains the 0-indexed sprite number [0-7]
+// 'sprite_dir_buf' contains the direction (x == 0x00, y == 0x01) the sprite postion should be decremented
+// 'sprite_step_buf' contains the step that a sprite should be decremented
 decrement_sprite_position:
 
 	// Find the offset of the sprite number and transfer to x-reg
