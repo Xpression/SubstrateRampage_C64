@@ -12,7 +12,6 @@
 .label joy2_buf         = $5000
 .label speed_bump       = $5001
 
-.label frame_counter    = $5002
 .label tmp              = $5003
 
 .label menu_flash_idx   = $5004
