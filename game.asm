@@ -42,6 +42,11 @@ debounce:
 // The game loop
 game_loop:
 
+	// Increase framcounter
+	ldy frame_counter
+	iny
+	sty frame_counter
+
 	lda #$ff
 	sta speed_bump
 
@@ -118,7 +123,7 @@ enemy_movement:
 	// First x-direction
 	lda #$00
 	sta sprite_dir_buf
-	ldx #$04
+	ldx #$04 
 	lda object_speeds, x
 	sta sprite_step_buf
 	jsr decrement_sprite_position
@@ -281,10 +286,10 @@ apply_gravity:
 	beq grav
 
 	// It is positive (uppermost bit not set). Check if the lower bits has reached max positive speed (5).
-	// If so we can skip grivity acceleration
+	// If so we can skip gravity acceleration
 	lda object_speeds, x
 	cmp #$05
-	beq skip_grav
+	bcs skip_grav
 
 grav:
 	// We should apply gravity
@@ -297,12 +302,22 @@ grav:
 	jsr increment_speed
 
 skip_grav:
+
+	// If speed larger than 5, set to five
+	lda object_speeds, x
+	cmp #$05
+	bcc grav_exit
+
+	lda #$05
+	sta object_speeds, x
+
+grav_exit:
 	rts
 
 
 boost_player_speed:
 	
-	// We are boosting the player speed upwards, so start by decrementing he actual speed
+	// We are boosting the player speed upwards, so start by decrementing the actual speed
 	// Memory address 0x5005 contains the 0-indexed object number [0-7]
 	lda #$00
 	sta sprite_num_buf
@@ -315,13 +330,14 @@ boost_player_speed:
 	// We have max cap on speed upwards of 10
 	ldx #$01
 	lda object_speeds, x
-	and #%01111111
+	and #$01111111
 	cmp #$0a
+	//cmp #%10001010
 	bcc boost_exit
 
 	// Speed upwards exceeds 10, so override it back to 10 with MSB set
 	ldx #$01
-	lda %1000101
+	lda #%10001010
 	sta object_speeds, x
 
 boost_exit:
