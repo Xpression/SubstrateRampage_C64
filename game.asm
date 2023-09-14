@@ -97,91 +97,15 @@ skip_boost_counter_dec:
 	jsr joy2_check
 	ldx #$ff
 
-	////// Move player /////////
-
-	// Move player in y-direction
+	// Apply gravity to the player
 	jsr apply_gravity
 
-playe_y_movement:
-
-	// Get player y-speed
-	ldx #$01
-	lda object_speeds, x
-
-	// If it is positive (MSB not set), we should increment sprite position
-	and #%10000000
-	cmp #%10000000
-	bne player_y_speed_positive
-	
-	//otherwise, decrement sprite position
+	////// Move player /////////
 	lda #$00
 	sta sprite_num_buf
-	lda #$01
-	sta sprite_dir_buf
-	ldx #$01
-	lda object_speeds, x
+	jsr move_object
 
-	// Populate sprite step buf with LSBs only
-	and #%01111111
-	sta sprite_step_buf
-	jsr decrement_sprite_position
-	jmp player_x_movement
 
-player_y_speed_positive:
-
-	lda #$00
-	sta sprite_num_buf
-	lda #$01
-	sta sprite_dir_buf
-	ldx #$01
-	lda object_speeds, x
-
-	// Populate sprite step buf with LSBs only
-	and #%01111111
-	sta sprite_step_buf
-	jsr increment_sprite_position
-
-	// Move player in x-direction
-
-player_x_movement:
-	
-	// Get player x-speed
-	lda object_speeds
-
-	// If it is positive, we should increment sprite position
-	and #%10000000
-	cmp #%10000000
-	bne player_x_speed_positive
-
-	//otherwise, decrement sprite position
-	lda #$00
-	sta sprite_num_buf
-	lda #$00
-	sta sprite_dir_buf
-	ldx #$00
-	lda object_speeds, x
-
-	// Populate sprite step buf with LSBs only
-	and #%01111111
-	sta sprite_step_buf
-	jsr decrement_sprite_position
-	jmp enemy_movement
-
-player_x_speed_positive:
-
-	lda #$00
-	sta sprite_num_buf
-	lda #$00
-	sta sprite_dir_buf
-	ldx #$00
-	lda object_speeds, x
-
-	// Populate sprite step buf with LSBs only
-	and #%01111111
-	sta sprite_step_buf
-	jsr increment_sprite_position
-
-	//// END Player movement
 
 enemy_movement:
 	// Move enemy one
@@ -519,3 +443,85 @@ dse:
 	rts
 
 
+// Subroutine that moves an object.
+// 'sprite_num_buf' contains the 0-indexed object number [0-7]
+move_object:
+
+	// Load the current y-speed of the object
+	// Find the offset of the sprite number and transfer to x-reg
+	lda sprite_num_buf
+	asl // multiply by two
+	clc
+	adc #$01 
+	tax
+
+	lda object_speeds, x
+
+	// If it is positive (MSB not set), we should increment sprite position
+	and #%10000000
+	cmp #%10000000
+	bne object_y_speed_positive
+	
+	//otherwise, decrement sprite position
+	lda #$01
+	sta sprite_dir_buf
+	lda object_speeds, x
+
+	// Populate sprite step buf with LSBs only
+	and #%01111111
+	sta sprite_step_buf
+	jsr decrement_sprite_position
+	jmp object_x_movement
+
+object_y_speed_positive:
+
+	lda #$01
+	sta sprite_dir_buf
+	lda object_speeds, x
+
+	// Populate sprite step buf with LSBs only
+	and #%01111111
+	sta sprite_step_buf
+	jsr increment_sprite_position
+
+	// Move player in x-direction
+
+object_x_movement:
+	
+	// Load the current x-speed of the object
+	// Find the offset of the sprite number and transfer to x-reg
+	lda sprite_num_buf
+	asl // multiply by two
+	tax
+
+	lda object_speeds, x
+
+	// If it is positive, we should increment sprite position
+	and #%10000000
+	cmp #%10000000
+	bne object_x_speed_positive
+
+	//otherwise, decrement sprite position
+	lda #$00
+	sta sprite_dir_buf
+	lda object_speeds, x
+
+	// Populate sprite step buf with LSBs only
+	and #%01111111
+	sta sprite_step_buf
+	jsr decrement_sprite_position
+	jmp move_object_exit
+
+object_x_speed_positive:
+
+	lda #$00
+	sta sprite_dir_buf
+	lda object_speeds, x
+
+	// Populate sprite step buf with LSBs only
+	and #%01111111
+	sta sprite_step_buf
+	jsr increment_sprite_position
+
+move_object_exit:
+	rts
