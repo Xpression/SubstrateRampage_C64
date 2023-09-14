@@ -1,12 +1,6 @@
-
-.label speed_bump = $5001
-.label frame_counter = $5002
-.label tmp = $5003
-
 // This is a table used for storing object speeds in x- and y-direction
 // This allows us to set speeds for player/enemies, and later read back
 // those values when we want to move them
-.label object_speeds = $500a 
 *=object_speeds "Object Speed" 
 	.byte 0, 0 // Player x-speed at 0x500a, Player y-speed at 0x500b
 	.byte 1, 1 // Enemy 1 x-speed at 0x500c, Enemy y-speed at 0x500d

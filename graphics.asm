@@ -1,14 +1,3 @@
-.label sprite_one = $07f8
-.label sprite_two = $07f9
-.label sprite_three = $07fa
-.label sprite_four = $07fb
-.label sprite_five = $07fc
-.label sprite_six = $07fd
-.label sprite_seven = $07fe
-.label sprite_eight = $07ff
-
-.label sprite_data_one = $3000
-
 *=sprite_data_one "Sprite Data One" 
 			.byte %00000000, %11111111, %00000000 	
 		 	.byte %00000001, %11111111, %10000000 	
@@ -82,10 +71,6 @@
 		 	.byte %11111111, %11111111, %11111111 	
 		 	.byte %11111111, %11111111, %11111111	
 			.byte %11111111
-
-.label sprite_num_buf = $5005
-.label sprite_dir_buf = $5006
-.label sprite_step_buf = $5007
 
 init_sprite_one:
 	// Set pointer to sprite one data

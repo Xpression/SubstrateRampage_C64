@@ -5,6 +5,7 @@
 #import "game.asm"
 #import "graphics.asm"
 #import "input.asm"
+#import "labels.asm"
 #import "menu.asm"
 #import "music.asm"
 
@@ -74,7 +75,6 @@ main_irq:
 	lda #$00
 	sta speed_bump
 
-	//.label frame_counter = $5002
 	ldy frame_counter
 	iny 
 	sty frame_counter

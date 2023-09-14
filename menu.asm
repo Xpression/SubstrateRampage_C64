@@ -1,6 +1,3 @@
-.label menu_flash_idx = $5002
-.label menu_flash_nop = $5003
-
 menu:
 	// Make screen black and text white
 	lda #$01 	// Load white color
