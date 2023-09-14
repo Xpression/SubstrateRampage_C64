@@ -10,7 +10,7 @@ boost_counter:
 object_speeds:
 	.byte 0, 0 // Player x-speed at 0x500a, Player y-speed at 0x500b
 	.byte %10000001, %10000001 // Enemy 1 x-speed at 0x500c, Enemy y-speed at 0x500d
-	.byte %10000010, %10000010 // ...
+	.byte %10000010, %00000010 // ...
 	.byte 0, 0
 	.byte 0, 0
 	.byte 0, 0
@@ -78,9 +78,27 @@ skip_boost_counter_dec:
 	jsr apply_gravity
 
 	////// Move player /////////
+	// Player cannot move out of the screen at top
+	lda $d001
+	cmp #$33
+	bcc hit_roof
+
 	lda #$00
 	sta sprite_num_buf
 	jsr move_object
+	jmp move_enemies
+
+hit_roof:
+	lda #$33
+	sta $d000, x
+
+	// Set vertical speed to zero
+	ldx #$01
+	lda #$00
+	sta object_speeds, x
+
+
+move_enemies:
 
 	// Move enemy one
 	lda #$01
