@@ -86,6 +86,7 @@ skip_boost_counter_dec:
 	// Player cannot move out of the screen at top
 	jsr handle_player_roof_collision
 	jsr handle_player_rw_collision
+	jsr handle_player_lw_collision
 
 
 	lda #$00
@@ -522,7 +523,7 @@ handle_player_rw_collision:
 	jmp hprwc_exit
 
 hit_rw:
-	lda #$e7
+	lda #$e7 // inside the screen
 	sta $d000
 
 	// Set horizontal speed to zero
@@ -530,4 +531,24 @@ hit_rw:
 	sta object_speeds
 
 hprwc_exit:
+	rts
+
+handle_player_lw_collision:
+
+	// Player cannot move out of the screen at top
+	lda $d000
+	cmp #$18
+	bcc hit_lw
+
+	jmp hplwc_exit
+
+hit_lw:
+	lda #$19 // inside the screen
+	sta $d000
+
+	// Set vertical speed to zero
+	lda #$00
+	sta object_speeds
+
+hplwc_exit:
 	rts
