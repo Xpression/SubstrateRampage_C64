@@ -87,49 +87,10 @@ skip_boost_counter_dec:
 	sta sprite_num_buf
 	jsr move_object
 
-	lda #$02
-	sta sprite_num_buf
-	jsr move_object
-
-/*
-enemy_movement:
-	// Move enemy one
-	lda #$01
-	sta sprite_num_buf
-	// First x-direction
-	lda #$00
-	sta sprite_dir_buf
-	ldx #$02
-	lda object_speeds, x
-	sta sprite_step_buf
-	jsr decrement_sprite_position
-	// Then y-direction
-	lda #$01
-	sta sprite_dir_buf
-	ldx #$03
-	lda object_speeds, x
-	sta sprite_step_buf
-	jsr decrement_sprite_position
-
 	// Move enemy two
 	lda #$02
 	sta sprite_num_buf
-	// First x-direction
-	lda #$00
-	sta sprite_dir_buf
-	ldx #$04 
-	lda object_speeds, x
-	sta sprite_step_buf
-	jsr decrement_sprite_position
-	// Then y-direction
-	lda #$01
-	sta sprite_dir_buf
-	ldx #$05
-	lda object_speeds, x
-	sta sprite_step_buf
-	jsr increment_sprite_position
-
-*/
+	jsr move_object
 
 	jsr is_player_sprite_collision
 
