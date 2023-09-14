@@ -4,6 +4,7 @@
 #import "clock.asm"
 #import "dead.asm"
 #import "game.asm"
+#import "game_status.asm"
 #import "graphics.asm"
 #import "input.asm"
 #import "labels.asm"
