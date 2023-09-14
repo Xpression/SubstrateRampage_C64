@@ -10,11 +10,7 @@
 
 // variables
 .label speed_bump       = $5001
-
 .label tmp              = $5003
-
-.label menu_flash_idx   = $5004
-.label menu_flash_nop   = $5005
 
 .label sprite_num_buf   = $5006
 .label sprite_dir_buf   = $5007
