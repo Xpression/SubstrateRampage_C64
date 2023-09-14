@@ -10,7 +10,7 @@ boost_counter:
 object_speeds:
 	.byte 0, 0 // Player x-speed at 0x500a, Player y-speed at 0x500b
 	.byte %10000001, %10000001 // Enemy 1 x-speed at 0x500c, Enemy y-speed at 0x500d
-	.byte %10000010, %10000010 // ...
+	.byte %10000010, %00000010 // ...
 	.byte 0, 0
 	.byte 0, 0
 	.byte 0, 0
@@ -83,58 +83,37 @@ skip_boost_counter_dec:
 	jsr apply_gravity
 
 	////// Move player /////////
+	// Player cannot move out of the screen at top
+	lda $d001
+	cmp #$33
+	bcc hit_roof
+
 	lda #$00
 	sta sprite_num_buf
 	jsr move_object
+	jmp move_enemies
+
+hit_roof:
+	lda #$33
+	sta $d000, x
+
+	// Set vertical speed to zero
+	ldx #$01
+	lda #$00
+	sta object_speeds, x
+
+
+move_enemies:
 
 	// Move enemy one
 	lda #$01
 	sta sprite_num_buf
 	jsr move_object
-
-	lda #$02
-	sta sprite_num_buf
-	jsr move_object
-
-/*
-enemy_movement:
-	// Move enemy one
-	lda #$01
-	sta sprite_num_buf
-	// First x-direction
-	lda #$00
-	sta sprite_dir_buf
-	ldx #$02
-	lda object_speeds, x
-	sta sprite_step_buf
-	jsr decrement_sprite_position
-	// Then y-direction
-	lda #$01
-	sta sprite_dir_buf
-	ldx #$03
-	lda object_speeds, x
-	sta sprite_step_buf
-	jsr decrement_sprite_position
 
 	// Move enemy two
 	lda #$02
 	sta sprite_num_buf
-	// First x-direction
-	lda #$00
-	sta sprite_dir_buf
-	ldx #$04 
-	lda object_speeds, x
-	sta sprite_step_buf
-	jsr decrement_sprite_position
-	// Then y-direction
-	lda #$01
-	sta sprite_dir_buf
-	ldx #$05
-	lda object_speeds, x
-	sta sprite_step_buf
-	jsr increment_sprite_position
-
-*/
+	jsr move_object
 
 	jsr cmp_player_collision
 	bne no_collision

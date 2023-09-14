@@ -81,7 +81,7 @@ init_sprite_one:
 	sta $d015 // sprite enable register
 
 	// Set position of sprite one
-	lda #$80 	// 0x80 = 128 decimal
+	lda #$18 	// 0x80 = 128 decimal
 	sta $d000	// sprite one position x
 	sta $d001	// sprite one position y
 
