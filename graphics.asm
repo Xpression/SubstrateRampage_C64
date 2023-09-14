@@ -393,13 +393,84 @@ increment_sprite_position:
 	adc sprite_dir_buf
 	tax
 
-	// load the value of the given sprite's x or y coordinate
+	and #%00000001
+	cmp #%00000001
+	beq inc_y_coordinate // we are incrementing a y-coordinate, so only care about single byte coordinates
+
+	///// Need to convert to hi and lo
+
+	// if overflow is set for this sprite, it should still be set since we are incrementing
+	// in that case we can do simple increment of low and store that
+	ldy sprite_num_buf
+	lda sprite_x_overflow_flags, y
+	cmp #$01
+	beq inc_lo
+
+	// If overflow is not set, we need to check whether we are are crossing the boundary of 255 and have to set it
+
+	// Find diff between 0xff and current value - this is how many pixels are left until overflow
+	lda #$ff
+	sec
+	sbc $d000, x // diff is now in A-reg
+
+	// if step we should increment with is smaller than this diff, we should keep overflow flag at 0 and increment LSB
+	cmp sprite_step_buf
+	bcs inc_lo
+
+	// Otherwise, we are crossing the boundary. We should set the hi bit and bring use the overflowed value as LSB
+	lda #$01
+	sta sprite_x_hi
+
+	// Increment the LSBs
+	lda $d000, x
+	clc
+	adc sprite_step_buf
+	sta sprite_x_lo
+
+	// Set the value
+	jsr set_sprite_x_position
+
+	jmp inc_spos_exit
+
+	/*
+	// Set position of sprite four (zero-indexed)
+	// x-coordina - overflow
+	lda #$03
+	sta sprite_num_buf
+	lda #$40 
+	sta sprite_x_lo
+	lda #$01
+	sta sprite_x_hi
+	jsr set_sprite_x_position
+	*/
+inc_lo:
+	// Keep the overflow flag
+	ldy sprite_num_buf
+	lda sprite_x_overflow_flags, y
+	sta sprite_x_hi
+
+	// Increment the LSBs
+	lda $d000, x
+	clc
+	adc sprite_step_buf
+	sta sprite_x_lo
+	
+	// Set the value
+	jsr set_sprite_x_position
+
+	jmp inc_spos_exit
+	
+
+inc_y_coordinate:
+
+	// load the value of the given sprite's y coordinate
 	lda $d000, x
 	clc
 	adc sprite_step_buf
 
 	sta $d000, x
-
+	
+inc_spos_exit:
 	rts
 
 // Subroutine that decrements a sprites position.
