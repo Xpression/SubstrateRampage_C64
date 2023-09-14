@@ -87,7 +87,7 @@ skip_boost_counter_dec:
 	jsr handle_player_roof_collision
 	jsr handle_player_rw_collision
 	jsr handle_player_lw_collision
-
+	jsr handle_player_floor_collision
 
 	lda #$00
 	sta sprite_num_buf
@@ -551,4 +551,29 @@ hit_lw:
 	sta object_speeds
 
 hplwc_exit:
+	rts
+
+handle_player_floor_collision:
+
+	// Player cannot move out of the screen at the bottom
+	lda $d001
+	cmp #$e6
+	bcs hit_floor
+
+	jmp hpfc_exit
+
+hit_floor:
+	lda #$e5 // inside the screen
+	sta $d001
+
+	// Flip the vertical speed 
+	ldx #$01
+	lda object_speeds, x
+	ora #%10000000
+	sta object_speeds, x
+
+	// This costs one life
+	jsr dec_player_health
+
+hpfc_exit:
 	rts
