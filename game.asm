@@ -88,12 +88,21 @@ skip_boost_counter_dec:
 	lda #$00
 	sta $d020
 	
+
 	// Check input and act on it
+	// hitting left or right will update speed in x-dir, so clear it first
+	lda #$00
+	sta object_speeds
+
 	jsr joy2_check
 	ldx #$ff
 
+	////// Move player /////////
+
 	// Move player in y-direction
 	jsr apply_gravity
+
+playe_y_movement:
 
 	// Get player y-speed
 	ldx #$01
@@ -102,7 +111,7 @@ skip_boost_counter_dec:
 	// If it is positive (MSB not set), we should increment sprite position
 	and #%10000000
 	cmp #%10000000
-	bne hola
+	bne player_y_speed_positive
 	
 	//otherwise, decrement sprite position
 	lda #$00
@@ -116,9 +125,10 @@ skip_boost_counter_dec:
 	and #%01111111
 	sta sprite_step_buf
 	jsr decrement_sprite_position
-	jmp enemy_movement
+	jmp player_x_movement
 
-hola:
+player_y_speed_positive:
+
 	lda #$00
 	sta sprite_num_buf
 	lda #$01
@@ -130,6 +140,48 @@ hola:
 	and #%01111111
 	sta sprite_step_buf
 	jsr increment_sprite_position
+
+	// Move player in x-direction
+
+player_x_movement:
+	
+	// Get player x-speed
+	lda object_speeds
+
+	// If it is positive, we should increment sprite position
+	and #%10000000
+	cmp #%10000000
+	bne player_x_speed_positive
+
+	//otherwise, decrement sprite position
+	lda #$00
+	sta sprite_num_buf
+	lda #$00
+	sta sprite_dir_buf
+	ldx #$00
+	lda object_speeds, x
+
+	// Populate sprite step buf with LSBs only
+	and #%01111111
+	sta sprite_step_buf
+	jsr decrement_sprite_position
+	jmp enemy_movement
+
+player_x_speed_positive:
+
+	lda #$00
+	sta sprite_num_buf
+	lda #$00
+	sta sprite_dir_buf
+	ldx #$00
+	lda object_speeds, x
+
+	// Populate sprite step buf with LSBs only
+	and #%01111111
+	sta sprite_step_buf
+	jsr increment_sprite_position
+
+	//// END Player movement
 
 enemy_movement:
 	// Move enemy one
@@ -224,7 +276,8 @@ joy2_check:
 	bne !joy2_check+
 	jsr handle_fire_pressed
 
-!joy2_check:	
+!joy2_check:
+
 	rts
 
 
@@ -250,24 +303,16 @@ hfp_exit:
 
 handle_left_pressed:
 
-	lda #$00
-	sta sprite_num_buf
-	sta sprite_dir_buf
-	lda #$03
-	sta sprite_step_buf
-	jsr decrement_sprite_position
-
+	// Update this to set player x-speed to negative one (MSB set and LSB 0001)
+	lda #%10000001
+	sta object_speeds
 	rts
 
 handle_right_pressed:
 
-	lda #$00
-	sta sprite_num_buf
-	sta sprite_dir_buf
-	lda #$03
-	sta sprite_step_buf
-	jsr increment_sprite_position
-
+	// Update this to set player speed to positive one (MSB clear and LSB 0001)
+	lda #$01
+	sta object_speeds
 	rts
 
 handle_up_pressed:
