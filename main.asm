@@ -42,7 +42,6 @@ start:
     sta $ffff
 
 	jsr music_init
-	jsr input_init
 
     cli        // enable maskable interrupts again
 	jmp menu

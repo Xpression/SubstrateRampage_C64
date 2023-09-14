@@ -9,7 +9,6 @@
 .label sprite_eight     = $07ff
 
 // variables
-.label joy2_buf         = $5000
 .label speed_bump       = $5001
 
 .label tmp              = $5003

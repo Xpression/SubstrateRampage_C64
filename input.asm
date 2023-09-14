@@ -1,8 +1,5 @@
-// this subroutine gets called during IRQ setup, with interrupts disabled
-input_init:
-	lda #$00
-	sta joy2_buf
-	rts
+joy2_buf:
+	.byte $00
 
 // this subroutine gets called on IRQ
 input_irq:
