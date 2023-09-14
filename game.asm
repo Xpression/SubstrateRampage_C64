@@ -4,6 +4,8 @@
 
 frame_counter:
 	.byte 0
+boost_counter:
+	.byte 0
 
 object_speeds:
 	.byte 0, 0 // Player x-speed at 0x500a, Player y-speed at 0x500b
@@ -43,9 +45,17 @@ game_loop:
 	// Increase framcounter
 	inc frame_counter
 
+	// Decrease boost counter if greater than or equal to one
+	lda boost_counter
+	cmp #$01
+	bcc skip_boost_counter_dec
+
+	dec boost_counter
+
+skip_boost_counter_dec:
+
 	lda #$ff
 	sta speed_bump
-
 	// Reset border color variable to black
 	lda #$00
 	sta $d020
@@ -194,12 +204,20 @@ joy2_check:
 handle_fire_pressed:
 
 	// Need some sort of debounce on fire press!!??
+	lda boost_counter
+	cmp #$01
+	bcs hfp_exit
 
 	lda #$05 // Green
 	sta $d020
 
 	jsr boost_player_speed
 
+	// Configure boost counter
+	lda #$1			// <--- 1 frame delay
+	sta boost_counter
+
+hfp_exit:
 	rts
 
 handle_left_pressed:
