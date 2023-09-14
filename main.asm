@@ -5,6 +5,7 @@
 #import "game.asm"
 #import "graphics.asm"
 #import "input.asm"
+#import "labels.asm"
 #import "menu.asm"
 #import "music.asm"
 

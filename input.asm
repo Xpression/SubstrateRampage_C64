@@ -1,5 +1,3 @@
-.label joy2_buf = $5000
-
 // this subroutine gets called during IRQ setup, with interrupts disabled
 input_init:
 	lda #$00

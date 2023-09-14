@@ -1,12 +1,6 @@
-
-.label speed_bump = $5001
-.label frame_counter = $5002
-.label tmp = $5003
-
 // This is a table used for storing object speeds in x- and y-direction
 // This allows us to set speeds for player/enemies, and later read back
 // those values when we want to move them
-.label object_speeds = $500a 
 *=object_speeds "Object Speed" 
 	.byte 0, 0 // Player x-speed at 0x500a, Player y-speed at 0x500b
 	.byte 1, 1 // Enemy 1 x-speed at 0x500c, Enemy y-speed at 0x500d
@@ -58,7 +52,6 @@ game_loop:
 	jsr joy2_check
 	ldx #$ff
 
-
 	// Move player in y-direction
 	jsr apply_gravity
 
@@ -70,7 +63,7 @@ game_loop:
 	and #%10000000
 	cmp #%10000000
 	bne hola
-
+	
 	//otherwise, decrement sprite position
 	lda #$00
 	sta sprite_num_buf
@@ -303,15 +296,6 @@ grav:
 
 skip_grav:
 
-	// If speed larger than 5, set to five
-	lda object_speeds, x
-	cmp #$05
-	bcc grav_exit
-
-	lda #$05
-	sta object_speeds, x
-
-grav_exit:
 	rts
 
 
@@ -462,8 +446,9 @@ dcz:
 
 	// So we need to set the MSB
 	ora #%10000000
-
+ 
 	sta object_speeds, x
+	.break
 // exit
 dse:
 	rts
