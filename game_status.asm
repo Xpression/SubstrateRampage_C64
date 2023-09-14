@@ -60,13 +60,6 @@ dec_player_health:
     rts
 
 
-cmp_player_alive:
-    lda player_health
-    eor #$ff
-    cmp #$00
-    rts
-
-
 inc_score:
     inc $0418           // increment first digit
     lda $0418           // read new digit back

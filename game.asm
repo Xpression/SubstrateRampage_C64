@@ -47,8 +47,9 @@ game_loop:
 
 
 	jsr dec_player_shield 	// reduce the shield of a player every game loop
-	//jsr cmp_player_alive	// then check if they are still alive
-	//bne game_over			// if not, go to the game-over screen
+	lda player_health       // if the player is out of health, then trigger
+	cmp #$00				// system cleanup and the game over sequence
+	beq game_over
 
 
 	jsr inc_score // TODO: move this jsr to where score should increase
