@@ -73,8 +73,12 @@ game_loop:
 	sta sprite_dir_buf
 	ldx #$01
 	lda object_speeds, x
+
+	// Populate sprite step buf with LSBs only
+	and #%01111111
 	sta sprite_step_buf
 	jsr decrement_sprite_position
+	jmp enemy_movement
 
 hola:
 	lda #$00
@@ -83,9 +87,13 @@ hola:
 	sta sprite_dir_buf
 	ldx #$01
 	lda object_speeds, x
+
+	// Populate sprite step buf with LSBs only
+	and #%01111111
 	sta sprite_step_buf
 	jsr increment_sprite_position
 
+enemy_movement:
 	// Move enemy one
 	lda #$01
 	sta sprite_num_buf
@@ -185,17 +193,20 @@ joy2_check:
 // Routines for acting on input from Joystick
 handle_fire_pressed:
 
-	// Need some sort of debounce on fire press
+	// Need some sort of debounce on fire press!!??
 
 	lda #$05 // Green
 	sta $d020
 
+	/*
 	// Increment y-speed for player
 	ldx #$01
 	lda object_speeds, x
 	clc
 	adc #$01 // increase speed by 10
 	sta object_speeds, x
+	**/
+	jsr boost_player_speed
 
 	rts
 
@@ -289,6 +300,38 @@ skip_grav:
 	rts
 
 
+boost_player_speed:
+	
+	// We are boosting the player speed upwards, so start by decrementing he actual speed
+	// Memory address 0x5005 contains the 0-indexed object number [0-7]
+	lda #$00
+	sta sprite_num_buf
+	lda #$01
+	sta sprite_dir_buf
+	lda #$06
+	sta sprite_step_buf
+	jsr decrement_speed
+
+	// We have max cap on speed upwards of 10
+	ldx #$01
+	lda object_speeds, x
+	and #%01111111
+	cmp #$0a
+	bcc boost_exit
+
+	// Speed upwards exceeds 10, so override it back to 10 with MSB set
+	ldx #$01
+	lda %1000101
+	sta object_speeds, x
+
+boost_exit:
+	rts
+
+
+
+
+
+
 // Subroutine that increments speed of an object. Manages flipping of MSB in case 0 border is crossed
 // Memory address 0x5005 contains the 0-indexed object number [0-7]
 // Memory address 0x5006 contains the direction (x == 0x00, y == 0x01) the speed should be incremented
@@ -358,7 +401,7 @@ decrement_speed:
 	lda sprite_num_buf
 	asl // multiply by two
 	clc
-	adc sprite_dir_buf
+	adc sprite_dir_buf 
 	tax
 
 	lda object_speeds, x
@@ -383,16 +426,17 @@ decrement_speed:
 	jmp dse
 
 inc_lsb_keep_msb:
-	
+	//.break
 	lda object_speeds, x
+	and #%01111111
 	clc
 	adc sprite_step_buf
 	ora #$10000000
 	sta object_speeds, x
+	//.break
 	jmp dse
 
 dcz:
-
 	// We crossed zero, so we first need to decrement to zero using the LSB of object speed, 
 	// The remainder is the new negative speed with MSB cleared
 	sta tmp // store the LSB speed in tmp
@@ -404,7 +448,6 @@ dcz:
 	ora #%10000000
 
 	sta object_speeds, x
-
 // exit
 dse:
 	rts
