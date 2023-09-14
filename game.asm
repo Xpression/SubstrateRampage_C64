@@ -9,8 +9,8 @@ boost_counter:
 
 object_speeds:
 	.byte 0, 0 // Player x-speed at 0x500a, Player y-speed at 0x500b
-	.byte 1, 1 // Enemy 1 x-speed at 0x500c, Enemy y-speed at 0x500d
-	.byte 2, 2 // ...
+	.byte %10000001, %10000001 // Enemy 1 x-speed at 0x500c, Enemy y-speed at 0x500d
+	.byte %10000010, %10000010 // ...
 	.byte 0, 0
 	.byte 0, 0
 	.byte 0, 0
@@ -105,8 +105,16 @@ skip_boost_counter_dec:
 	sta sprite_num_buf
 	jsr move_object
 
+	// Move enemy one
+	lda #$01
+	sta sprite_num_buf
+	jsr move_object
 
+	lda #$02
+	sta sprite_num_buf
+	jsr move_object
 
+/*
 enemy_movement:
 	// Move enemy one
 	lda #$01
@@ -143,6 +151,8 @@ enemy_movement:
 	lda object_speeds, x
 	sta sprite_step_buf
 	jsr increment_sprite_position
+
+*/
 
 	jsr is_player_sprite_collision
 
