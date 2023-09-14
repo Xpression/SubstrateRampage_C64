@@ -28,3 +28,6 @@
 
 .label object_speeds    = $500a // 2x8 bytes, to $501a
 
+.label frame_hi         = $5100
+.label frame_lo         = $5101
+.label wait_frames      = $5102
