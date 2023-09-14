@@ -84,24 +84,14 @@ skip_boost_counter_dec:
 
 	////// Move player /////////
 	// Player cannot move out of the screen at top
-	lda $d001
-	cmp #$33
-	bcc hit_roof
+	jsr handle_player_roof_collision
+	jsr handle_player_rw_collision
+
 
 	lda #$00
 	sta sprite_num_buf
 	jsr move_object
 	jmp move_enemies
-
-hit_roof:
-	lda #$33
-	sta $d000, x
-
-	// Set vertical speed to zero
-	ldx #$01
-	lda #$00
-	sta object_speeds, x
-
 
 move_enemies:
 
@@ -499,4 +489,45 @@ object_x_speed_positive:
 	jsr increment_sprite_position
 
 move_object_exit:
+	rts
+
+handle_player_roof_collision:
+
+	// Player cannot move out of the screen at top
+	lda $d001
+	cmp #$33
+	bcc hit_roof
+
+	jmp hprc_exit
+
+hit_roof:
+	lda #$33
+	sta $d001
+
+	// Set vertical speed to zero
+	ldx #$01
+	lda #$00
+	sta object_speeds, x
+
+hprc_exit:
+	rts
+
+handle_player_rw_collision:
+
+	// Player cannot move out of the screen to the right
+	lda $d000
+	cmp #$e8
+	bcs hit_rw
+
+	jmp hprwc_exit
+
+hit_rw:
+	lda #$e7
+	sta $d000
+
+	// Set horizontal speed to zero
+	lda #$00
+	sta object_speeds
+
+hprwc_exit:
 	rts
