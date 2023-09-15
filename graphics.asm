@@ -496,7 +496,6 @@ decrement_sprite_position:
 	cmp sprite_step_buf
 	bcs dec_lo
 
-	//.break
 	// Otherwise, we are crossing the boundary. We should clear the hi bit and use the underflowed value as LSB
 	lda #$00
 	sta sprite_x_hi
@@ -506,7 +505,6 @@ decrement_sprite_position:
 	sec
 	sbc sprite_step_buf
 
-	//.break
 	sta sprite_x_lo
 
 	// Set the value
