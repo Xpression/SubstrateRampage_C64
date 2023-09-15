@@ -180,9 +180,6 @@ handle_fire_pressed:
 	cmp #$01
 	bcs hfp_exit
 
-	lda #$05 // Green
-	sta $d020
-
 	jsr boost_player_speed
 
 	// Configure boost counter
