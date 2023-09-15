@@ -81,7 +81,7 @@ sprite_x_hi:
 sprite_x_lo:
 	.byte 0
 
-// Subroutine that increments sets a sprites x-position.
+// Subroutine that sets a sprites x-position.
 // 'sprite_num_buf' contains the 0-indexed sprite number [0-7]
 // 'sprite_x_hi' contains the high byte, will always be 0x01 or 0x00
 // 'sprite_x_lo' contains the low byte, will range 0x00 to 0xff
@@ -300,7 +300,6 @@ init_sprite_one:
 
 	rts
 
-
 init_sprite_two:
 	// Set pointer to two one data
 	lda #$0c1 // 0x3040 / 0x40 => 0xc1
@@ -312,8 +311,17 @@ init_sprite_two:
 	sta $d015 // sprite enable register
 
 	// Set position of sprite two
+
+	// x-coordina - overflow
+	lda #$01
+	sta sprite_num_buf
+	lda #$40 
+	sta sprite_x_lo
+	lda #$01
+	sta sprite_x_hi
+	jsr set_sprite_x_position
+
 	lda #$50 	
-	sta $d002	// sprite two position x
 	sta $d003	// sprite two position y
 
 	rts
@@ -329,12 +337,47 @@ init_sprite_three:
 	sta $d015 // sprite enable register
 
 	// Set position of sprite three
+
+	// Set position of sprite three (zero-indexed)
+	// x-coordina - overflow
+	lda #$02
+	sta sprite_num_buf
+	lda #$40 
+	sta sprite_x_lo
+	lda #$01
+	sta sprite_x_hi
+	jsr set_sprite_x_position
+
 	lda #$b0 	
-	sta $d004	// sprite two position x
 	sta $d005	// sprite two position y
 
 	rts
 
+init_sprite_four:
+	// Set pointer to two one data
+	lda #$0c1 // 0x30c0 / 0x40 => 0xc3
+	sta sprite_four
+
+	// Enable sprite four
+	lda $d015
+	ora #%00001000
+	sta $d015 // sprite enable register
+
+	// Set position of sprite four (zero-indexed)
+	// x-coordina - overflow
+	lda #$03
+	sta sprite_num_buf
+	lda #$58 
+	sta sprite_x_lo
+	lda #$01
+	sta sprite_x_hi
+	jsr set_sprite_x_position
+
+	// y-coordinate
+	lda #$b0
+	sta $d007	// sprite two position y
+
+	rts
 
 // Subroutine that increments a sprites position.
 // 'sprite_num_buf' contains the 0-indexed sprite number [0-7]
@@ -434,52 +477,39 @@ decrement_sprite_position:
 	cmp #%00000001
 	beq dec_y_coordinate // we are decrementing a y-coordinate, so only care about single byte coordinates
 
-	///// Need to convert to hi and lo
+	// We are decrementing in x-direction
+	// Need to handle the hi- and lo- states correctly
+	// This means checking whether or not we will underflow the LSBs. If so, we need to flip the 
+	// overflow bit. Otherwise, it should be kept as is.
+	lda $d000, x
+	cmp sprite_step_buf
+	bcc will_cross_zero // step is larger than distance to underflow
 
-	// if overflow is not set for this sprite, it should remain so since we are incrementing
-	// in that case we can do simple decrement of low and store that
+	// We can keep the hi-bit as is
 	ldy sprite_num_buf
 	lda sprite_x_overflow_flags, y
-	cmp #$00
-	beq dec_lo
-
-	// If overflow is set, we need to check whether we are are crossing the boundary of 0 and have to set clear it
-
-	// Find diff between 0x00 and current value - this is how many pixels are left until underflow
-	lda $d000
-	
-	// if step we should increment with is smaller than this diff, we should keep overflow flag at 1 and decrement LSB
-	cmp sprite_step_buf
-	bcs dec_lo
-
-	// Otherwise, we are crossing the boundary. We should clear the hi bit and use the underflowed value as LSB
-	lda #$00
 	sta sprite_x_hi
 
-	// Decrement the LSBs
-	lda $d000, x
-	sec
-	sbc sprite_step_buf
+	jmp dec_lo
 
-	sta sprite_x_lo
-
-	// Set the value
-	jsr set_sprite_x_position
-
-	jmp dec_spos_exit
+will_cross_zero:
+	
+	// Must flip MSB
+	ldy sprite_num_buf
+	lda sprite_x_overflow_flags, y
+	sta tmp
+	jsr flip_flag // <-- flips a reg, 0x00 => 0x01, 0x01 => 0x00
+	lda tmp
+	sta sprite_x_hi
 
 dec_lo:
-	// Keep the overflow flag
-	ldy sprite_num_buf
-	lda sprite_x_overflow_flags, y
-	sta sprite_x_hi
 
-	// Decrement the LSBs
+	// Decrement the LSB-component
 	lda $d000, x
 	sec
 	sbc sprite_step_buf
 	sta sprite_x_lo
-	
+
 	// Set the value
 	jsr set_sprite_x_position
 
@@ -501,3 +531,18 @@ cmp_player_collision:
     and #$01  // mask to player only
     cmp #$01  // check collision
     rts
+
+flip_flag:
+	lda tmp
+	cmp #$00
+	beq return_one
+
+	lda #$00
+	sta tmp
+	rts
+
+return_one:
+	lda #$01
+	sta tmp
+
+	rts

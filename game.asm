@@ -10,8 +10,8 @@ boost_counter:
 object_speeds:
 	.byte 0, 0 // Player x-speed at 0x500a, Player y-speed at 0x500b
 	.byte %10000001, %10000001 // Enemy 1 x-speed at 0x500c, Enemy y-speed at 0x500d
-	.byte %10000010, %00000010 // ...
-	.byte 0, 0
+	.byte %10000001, %00000000 // ...
+	.byte %10000010, %00000010
 	.byte 0, 0
 	.byte 0, 0
 	.byte 0, 0
@@ -26,6 +26,8 @@ game:
 	jsr init_sprite_one
 	jsr init_sprite_two
 	jsr init_sprite_three
+	jsr init_sprite_four
+
 	lda #$ff
 
 	// Debounce
@@ -92,7 +94,6 @@ skip_boost_counter_dec:
 	lda #$00
 	sta sprite_num_buf
 	jsr move_object
-	jmp move_enemies
 
 move_enemies:
 
@@ -106,9 +107,22 @@ move_enemies:
 	sta sprite_num_buf
 	jsr move_object
 
+	// Move enemy three
+	lda #$03
+	sta sprite_num_buf
+	jsr move_object
+
+	// Move enemy four
+	lda #$04
+	sta sprite_num_buf
+	jsr move_object
+
+	// Player collision
 	jsr cmp_player_collision
 	bne no_collision
 	jsr dec_player_health
+
+
 no_collision:
 
 // Busy wait on speed bump
