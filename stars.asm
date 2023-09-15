@@ -71,6 +71,14 @@ move_stars:
     bne !move_stars+    
     ldy #$2d            // reset at screen width
     sty stars_col
+
+    lda stars_row
+    adc #$13
+    cmp #$19
+    bcc !next_row+
+    sbc #$19
+!next_row:
+    sta stars_row
     rts
 
 !move_stars:
