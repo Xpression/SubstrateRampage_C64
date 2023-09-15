@@ -2,14 +2,12 @@ wait_b1: .byte $00
 wait_b2: .byte $00
 wait_b3: .byte $00
 
-
 dead:
     lda #$00
     sta $d020 // border
     sta $d021 // background
     sta $0286 // cursor
     jsr draw_dead
-
 
     lda #$00
     sta wait_b1
@@ -28,8 +26,6 @@ dead_wait:
     sta wait_b3
     cmp #$03
     bne dead_wait
-
-
     jmp menu
 
 
