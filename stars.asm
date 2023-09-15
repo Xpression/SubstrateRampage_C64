@@ -1,7 +1,7 @@
 stars_x: 
     .byte $00
 stars_y: 
-    .word $db98
+    .word $dbc0
 
 col_address:
     .word $d800
