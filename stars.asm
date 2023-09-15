@@ -1,5 +1,34 @@
-stars_x: .byte $00
-stars_y: .byte $10
+stars_x: 
+    .byte $00
+stars_y: 
+    .word $db98
+
+col_address:
+    .word $d800
+    .word $d828
+    .word $d850
+    .word $d878
+    .word $d8a0
+    .word $d8c8
+    .word $d8f0
+    .word $d918
+    .word $d940
+    .word $d968
+    .word $d990
+    .word $d9b8
+    .word $d9e0
+    .word $da08
+    .word $da30
+    .word $da58
+    .word $da80
+    .word $daa8
+    .word $dad0
+    .word $daf8
+    .word $db20
+    .word $db48
+    .word $db70
+    .word $db98
+    .word $dbc0
 
 
 init_stars:
@@ -35,16 +64,19 @@ move_stars:
     stx stars_x
 
 !move_stars:
+    cpx #$28
+    bcs !next_char+
     lda #BLACK
-    sta $d990,x
+    sta $db98,x
 
+!next_char:
     dex
     cpx #$ff
     beq !move_stars+
     cpx #$28            // compare this position to screen width
     bcs !next_char+     // http://www.6502.org/tutorials/compare_beyond.html 
     lda #DARK_GRAY
-    sta $d990,x
+    sta $db98,x
 
 !next_char:
     dex
@@ -53,7 +85,7 @@ move_stars:
     cpx #$28
     bcs !next_char+
     lda #GRAY
-    sta $d990,x
+    sta $db98,x
 
 !next_char:
     dex
@@ -62,7 +94,7 @@ move_stars:
     cpx #$28
     bcs !next_char+
     lda #LIGHT_GRAY
-    sta $d990,x
+    sta $db98,x
 
 !next_char:
     dex
@@ -71,7 +103,7 @@ move_stars:
     cpx #$28
     bcs !next_char+
     lda #WHITE
-    sta $d990,x
+    sta $db98,x
 
 !next_char:
 !move_stars:
