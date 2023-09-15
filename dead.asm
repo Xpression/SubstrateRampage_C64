@@ -1,3 +1,8 @@
+wait_b1: .byte $00
+wait_b2: .byte $00
+wait_b3: .byte $00
+
+
 dead:
     lda #$00
     sta $d020 // border
@@ -5,18 +10,25 @@ dead:
     sta $0286 // cursor
     jsr draw_dead
 
-    ldx #$ff
-dead_wait_x:
 
-    ldy #$ff
-dead_wait_y:
-    dey
-    cpy $ff
-    bne dead_wait_y
+    lda #$00
+    sta wait_b1
+    sta wait_b2
+    sta wait_b3
+dead_wait:
+    clc
+    lda wait_b1
+    adc #$01
+    sta wait_b1
+    lda wait_b2
+    adc #$00
+    sta wait_b2
+    lda wait_b3
+    adc #$00
+    sta wait_b3
+    cmp #$03
+    bne dead_wait
 
-    dex 
-    cpx $ff
-    bne dead_wait_x
 
     jmp menu
 
