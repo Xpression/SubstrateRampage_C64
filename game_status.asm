@@ -15,10 +15,6 @@ status_txt:
 status_col:     
     .byte $02,$02,$02,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01
     .byte $01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$01,$0b,$0b
-shield_txt:     
-    .text "shield: "
-    .byte $a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0
-    .byte $a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0,$a0
 
 
 init_status:
@@ -36,11 +32,6 @@ init_status:
     sta $0400, x
     lda status_col, x
     sta $d800, x
-
-    lda shield_txt, x
-    sta $07c0, x
-    lda #$00
-    sta $dbc0, x
 
     inx
     cpx #$28

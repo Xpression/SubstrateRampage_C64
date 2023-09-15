@@ -38,7 +38,7 @@ init_stars:
     ldx #$00
 
 !init_stars:
-    lda #$91
+    lda #$a0
     sta $0400, x
     sta $0500, x
     sta $0600, x
