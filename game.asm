@@ -44,7 +44,15 @@ debounce:
 
 // The game loop
 game_loop:
-	inc frame_counter
+	inc frame_counter	
+	
+	lda frame_counter
+	and #$0f
+	cmp #$0f
+	bcc !game_loop+
+	jsr inc_score
+!game_loop:
+
 	jsr draw_status
 	jsr move_stars
 
@@ -52,9 +60,6 @@ game_loop:
 	lda player_health       // if the player is out of health, then trigger
 	cmp #$00				// system cleanup and the game over sequence
 	beq game_over
-
-
-	jsr inc_score // TODO: move this jsr to where score should increase
 
 	// Decrease boost counter if greater than or equal to one
 	lda boost_counter
