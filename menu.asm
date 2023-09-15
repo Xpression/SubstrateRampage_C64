@@ -5,6 +5,10 @@ menu_flash_delay:
 	.byte $00
 
 menu:
+	lda #$00
+	sta next_song
+	jsr change_song
+
 	// Make screen black and text white
 	lda #$01 	// Load white color
 	sta $d020	// Store color on border (0xd020)

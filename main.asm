@@ -43,8 +43,6 @@ start:
     lda #>irq
     sta $ffff
 
-	jsr music_init
-
     cli        // enable maskable interrupts again
 	jmp menu
 

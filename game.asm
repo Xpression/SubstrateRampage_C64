@@ -20,6 +20,10 @@ object_speeds:
 
 // The game entry point
 game:
+	lda #$01
+	sta next_song
+	jsr change_song
+
 	jsr clear_screen
 	jsr init_stars	
 	jsr init_status

@@ -3,6 +3,10 @@ wait_b2: .byte $00
 wait_b3: .byte $00
 
 dead:
+    lda #$02
+    sta next_song
+    jsr change_song
+
     lda #$00
     sta $d020 // border
     sta $d021 // background
