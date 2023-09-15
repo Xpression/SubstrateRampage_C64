@@ -10,6 +10,7 @@
 #import "labels.asm"
 #import "menu.asm"
 #import "music.asm"
+#import "stars.asm"
 
 start:
     sei        // disable maskable IRQs

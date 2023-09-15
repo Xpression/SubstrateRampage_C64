@@ -21,6 +21,7 @@ object_speeds:
 // The game entry point
 game:
 	jsr clear_screen
+	jsr init_stars	
 	jsr init_status
 	jsr init_sprite_one
 	jsr init_sprite_two
@@ -45,7 +46,7 @@ debounce:
 game_loop:
 	inc frame_counter
 	jsr draw_status
-
+	jsr move_stars
 
 	jsr dec_player_shield 	// reduce the shield of a player every game loop
 	lda player_health       // if the player is out of health, then trigger
