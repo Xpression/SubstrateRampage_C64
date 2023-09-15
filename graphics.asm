@@ -324,7 +324,6 @@ init_sprite_one:
 
 	rts
 
-
 init_sprite_two:
 	// Set pointer to two one data
 	lda #$0c1 // 0x3040 / 0x40 => 0xc1
@@ -378,7 +377,6 @@ init_sprite_three:
 
 	rts
 
-/*
 init_sprite_four:
 	// Set pointer to two one data
 	lda #$0c3 // 0x30c0 / 0x40 => 0xc3
@@ -404,7 +402,6 @@ init_sprite_four:
 	sta $d007	// sprite two position y
 
 	rts
-*/
 
 // Subroutine that increments a sprites position.
 // 'sprite_num_buf' contains the 0-indexed sprite number [0-7]
@@ -524,11 +521,9 @@ will_cross_zero:
 	// Must flip MSB
 	ldy sprite_num_buf
 	lda sprite_x_overflow_flags, y
-	.break
 	sta tmp
 	jsr flip_flag // <-- flips a reg, 0x00 => 0x01, 0x01 => 0x00
 	lda tmp
-	.break
 	sta sprite_x_hi
 
 dec_lo:
@@ -544,91 +539,6 @@ dec_lo:
 
 	jmp dec_spos_exit
 
-
-	/*
-	///// Need to convert to hi and lo
-
-	// if overflow is not set for this sprite, it should remain so since we are incrementing
-	// in that case we can do simple decrement of low and store that
-	ldy sprite_num_buf
-	lda sprite_x_overflow_flags, y
-	cmp #$00
-	beq dec_lo
-
-	// If overflow is set, we need to check whether we are are crossing the boundary of 0 and have to set clear it
-
-	// Find diff between 0x00 and current value - this is how many pixels are left until underflow
-	lda $d000, x
-	
-	// if step we should increment with is smaller than this diff, we should keep overflow flag at 1 and decrement LSB
-	cmp sprite_step_buf
-	bcs dec_lo
-
-	// Otherwise, we are crossing the boundary. We should *flip* the hi bit and use the underflowed value as LSB
-	lda sprite_x_hi
-	sta tmp
-	jsr flip_flag // <-- flips a reg, 0x00 => 0x01, 0x01 => 0x00
-	lda tmp
-	sta sprite_x_hi
-	// Decrement the LSBs
-	lda $d000, x
-	sec
-	sbc sprite_step_buf
-
-	sta sprite_x_lo
-
-	// Set the value
-	jsr set_sprite_x_position
-
-	jmp dec_spos_exit
-
-dec_lo:
-
-	// Find diff between 0x00 and current value - this is how many pixels are left until underflow
-	lda $d000, x
-	
-	// if step we should increment with is smaller than this diff, we should keep overflow flag at 1 and decrement LSB
-	cmp sprite_step_buf
-	bcs keep_flag
-
-	.break
-	// Otherwise, we are crossing the boundary. We should *flip* the hi bit and use the underflowed value as LSB
-	lda sprite_x_hi
-	sta tmp
-	jsr flip_flag // <-- flips a reg, 0x00 => 0x01, 0x01 => 0x00
-	lda tmp
-	sta sprite_x_hi
-
-	.break
-	// Decrement the LSBs
-	lda $d000, x
-	sec
-	sbc sprite_step_buf
-	sta sprite_x_lo
-	
-	.break
-	// Set the value
-	jsr set_sprite_x_position
-
-	jmp dec_spos_exit
-
-keep_flag:
-	// Keep the overflow flag
-	ldy sprite_num_buf
-	lda sprite_x_overflow_flags, y
-	sta sprite_x_hi
-
-	// Decrement the LSBs
-	lda $d000, x
-	sec
-	sbc sprite_step_buf
-	sta sprite_x_lo
-	
-	// Set the value
-	jsr set_sprite_x_position
-
-	jmp dec_spos_exit
-	*/
 dec_y_coordinate:
 	// load the value of the given sprite's x or y coordinate
 	lda $d000, x
