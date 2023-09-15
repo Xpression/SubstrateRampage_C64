@@ -1,7 +1,9 @@
 stars_x: 
     .byte $00
-stars_y: 
-    .word $dbc0
+stars_y_hi: 
+    .byte $db
+stars_y_lo: 
+    .byte $c0
 
 col_address:
     .word $d800
@@ -56,54 +58,60 @@ init_stars:
 
 
 move_stars:
-    dec stars_x
-    ldx stars_x
-    cpx #$ff            // check if x has underflowed
+    ldy stars_y_lo      // bring stars_y into free zero page bytes:
+    sty $00fb           // https://www.c64-wiki.com/wiki/Zeropage
+    ldy stars_y_hi      // to enable indirect-indexed addressing:
+    sty $00fc           // https://www.c64-wiki.com/wiki/Indirect-indexed_addressing
+
+    dec stars_x         
+    ldy stars_x         
+    cpy #$ff            // check if x has underflowed
     bne !move_stars+    
-    ldx #$2d            // reset at screen width
-    stx stars_x
+    ldy #$2d            // reset at screen width
+    sty stars_x
 
 !move_stars:
-    cpx #$28
+    cpy #$28
     bcs !next_char+
+
     lda #BLACK
-    sta $dbc0,x
+    sta ($fb),y
 
 !next_char:
-    dex
-    cpx #$ff
+    dey
+    cpy #$ff
     beq !move_stars+
-    cpx #$28            // compare this position to screen width
+    cpy #$28            // compare this position to screen width
     bcs !next_char+     // http://www.6502.org/tutorials/compare_beyond.html 
     lda #DARK_GRAY
-    sta $dbc0,x
+    sta ($fb),y
 
 !next_char:
-    dex
-    cpx #$ff
+    dey
+    cpy #$ff
     beq !move_stars+
-    cpx #$28
+    cpy #$28
     bcs !next_char+
     lda #GRAY
-    sta $dbc0,x
+    sta ($fb),y
 
 !next_char:
-    dex
-    cpx #$ff
+    dey
+    cpy #$ff
     beq !move_stars+
-    cpx #$28
+    cpy #$28
     bcs !next_char+
     lda #LIGHT_GRAY
-    sta $dbc0,x
+    sta ($fb),y
 
 !next_char:
-    dex
-    cpx #$ff
+    dey
+    cpy #$ff
     beq !move_stars+
-    cpx #$28
+    cpy #$28
     bcs !next_char+
     lda #WHITE
-    sta $dbc0,x
+    sta ($fb),y
 
 !next_char:
 !move_stars:
