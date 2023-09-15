@@ -73,11 +73,6 @@ skip_boost_counter_dec:
 	lda #$ff
 	sta speed_bump
 
-	// Reset border color variable to black
-	lda #$00
-	sta $d020
-	
-
 	// Check input and act on it
 	// hitting left or right will update speed in x-dir, so clear it first
 	lda #$00
@@ -209,15 +204,9 @@ handle_right_pressed:
 	rts
 
 handle_up_pressed:
-	//lda #$08 // orange
-	//sta $d020
-
 	rts
 
 handle_down_pressed:
-	//lda #$04 // purple
-	//sta $d020
-
 	rts
 
 apply_gravity:

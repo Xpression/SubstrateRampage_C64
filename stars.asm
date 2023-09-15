@@ -67,7 +67,7 @@ move_stars:
     cpx #$28
     bcs !next_char+
     lda #BLACK
-    sta $db98,x
+    sta $dbc0,x
 
 !next_char:
     dex
@@ -76,7 +76,7 @@ move_stars:
     cpx #$28            // compare this position to screen width
     bcs !next_char+     // http://www.6502.org/tutorials/compare_beyond.html 
     lda #DARK_GRAY
-    sta $db98,x
+    sta $dbc0,x
 
 !next_char:
     dex
@@ -85,7 +85,7 @@ move_stars:
     cpx #$28
     bcs !next_char+
     lda #GRAY
-    sta $db98,x
+    sta $dbc0,x
 
 !next_char:
     dex
@@ -94,7 +94,7 @@ move_stars:
     cpx #$28
     bcs !next_char+
     lda #LIGHT_GRAY
-    sta $db98,x
+    sta $dbc0,x
 
 !next_char:
     dex
@@ -103,7 +103,7 @@ move_stars:
     cpx #$28
     bcs !next_char+
     lda #WHITE
-    sta $db98,x
+    sta $dbc0,x
 
 !next_char:
 !move_stars:

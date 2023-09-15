@@ -49,11 +49,15 @@ init_status:
 
 
 dec_player_shield:
-    ldx player_shield           // only decrease the shield counter
-    cpx #$00                    // if it is non-zero to avoid any
-    beq !upd_player_shield+     // glitch that could cause invuln
-    dec player_shield
-!upd_player_shield:
+    lda player_shield           // does the player have shield?
+    cmp #$00
+    bne !dec_player_shield+ 
+    lda #$00
+    sta $d020 
+    rts
+!dec_player_shield:
+    dec player_shield           // yes, decrease it
+    inc $d020                   // flash border
     rts
 
 
@@ -109,30 +113,8 @@ inc_score:
 
 
 draw_status:
-    jsr draw_shield
     jsr draw_health
     jsr draw_frame
-    rts
-
-
-draw_shield:
-    ldx #$00
-
-    lda #$01
-!draw_shield:
-    cpx player_shield
-    beq !draw_shield+
-    sta $dbc0, x
-    inx
-    jmp !draw_shield-
-
-!draw_shield:
-    lda #$00
-!draw_shield:
-    sta $dbc0, x
-    inx
-    cpx #$28
-    bne !draw_shield-
     rts
 
 
