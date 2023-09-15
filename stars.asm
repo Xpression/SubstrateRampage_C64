@@ -59,11 +59,11 @@ move_stars:
     lda stars_row
     asl 
     tax
-    ldy row_address,x   // bring row address into free zero page bytes:
-    sty $00fb           // https://www.c64-wiki.com/wiki/Zeropage
+    lda row_address,x   // bring row address into free zero page bytes:
+    sta $00fb           // https://www.c64-wiki.com/wiki/Zeropage
     inx
-    ldy row_address,x   // to enable indirect-indexed addressing:
-    sty $00fc           // https://www.c64-wiki.com/wiki/Indirect-indexed_addressing
+    lda row_address,x   // to enable indirect-indexed addressing:
+    sta $00fc           // https://www.c64-wiki.com/wiki/Indirect-indexed_addressing
 
     dec stars_col         
     ldy stars_col         
@@ -71,6 +71,7 @@ move_stars:
     bne !move_stars+    
     ldy #$2d            // reset at screen width
     sty stars_col
+    rts
 
 !move_stars:
     cpy #$28
