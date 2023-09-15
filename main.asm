@@ -87,11 +87,12 @@ irq:
 	lda #$00
 	sta speed_bump
 
-    inc frame_lo
     lda frame_lo
-    cmp #$ff
-    bne !irq+
-    inc frame_hi
+    adc #$01
+    sta frame_lo
+    lda frame_hi
+    adc #$00
+    sta frame_hi
 
 !irq:
 

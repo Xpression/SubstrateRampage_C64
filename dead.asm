@@ -24,7 +24,7 @@ dead_wait:
     lda wait_b3
     adc #$00
     sta wait_b3
-    cmp #$03
+    cmp #$02
     bne dead_wait
     jmp menu
 
