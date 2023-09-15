@@ -1,11 +1,9 @@
-stars_x: 
+stars_col: 
     .byte $00
-stars_y_hi: 
-    .byte $db
-stars_y_lo: 
-    .byte $c0
+stars_row:
+    .byte $18
 
-col_address:
+row_address:
     .word $d800
     .word $d828
     .word $d850
@@ -35,7 +33,7 @@ col_address:
 
 init_stars:
     lda #$00
-    sta stars_x
+    sta stars_col
 
     ldx #$00
 
@@ -58,17 +56,21 @@ init_stars:
 
 
 move_stars:
-    ldy stars_y_lo      // bring stars_y into free zero page bytes:
+    lda stars_row
+    asl 
+    tax
+    ldy row_address,x   // bring row address into free zero page bytes:
     sty $00fb           // https://www.c64-wiki.com/wiki/Zeropage
-    ldy stars_y_hi      // to enable indirect-indexed addressing:
+    inx
+    ldy row_address,x   // to enable indirect-indexed addressing:
     sty $00fc           // https://www.c64-wiki.com/wiki/Indirect-indexed_addressing
 
-    dec stars_x         
-    ldy stars_x         
+    dec stars_col         
+    ldy stars_col         
     cpy #$ff            // check if x has underflowed
     bne !move_stars+    
     ldy #$2d            // reset at screen width
-    sty stars_x
+    sty stars_col
 
 !move_stars:
     cpy #$28
