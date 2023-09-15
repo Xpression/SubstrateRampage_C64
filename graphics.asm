@@ -304,6 +304,11 @@ cvo_exit:
 
 
 init_sprite_one:
+
+	// Clear the overflow flag
+	lda #$00
+	sta sprite_x_overflow_flags
+
 	// Set pointer to sprite one data
 	lda #$0c0 // 0x3000 / 0x40 => 0xc0
 	sta sprite_one
