@@ -515,15 +515,22 @@ hprc_exit:
 
 handle_player_rw_collision:
 
+	// If the overflow bit is not set, then we are not hitting the right wall
+	lda sprite_x_overflow_flags
+	cmp #$00
+	beq hprwc_exit
+
+	// flag is set, check if we have hit border
+
 	// Player cannot move out of the screen to the right
 	lda $d000
-	cmp #$e8
+	cmp #$3f
 	bcs hit_rw
 
 	jmp hprwc_exit
 
 hit_rw:
-	lda #$e7 // inside the screen
+	lda #$3e // inside the screen
 	sta $d000
 
 	// Set horizontal speed to zero
@@ -535,7 +542,12 @@ hprwc_exit:
 
 handle_player_lw_collision:
 
-	// Player cannot move out of the screen at top
+	// If the overflow flag is set, then we are not hitting the left wall
+	lda sprite_x_overflow_flags
+	cmp #$01
+	beq hplwc_exit
+
+	// Player cannot move out of the screen to the left
 	lda $d000
 	cmp #$18
 	bcc hit_lw
