@@ -432,17 +432,6 @@ increment_sprite_position:
 
 	jmp inc_spos_exit
 
-	/*
-	// Set position of sprite four (zero-indexed)
-	// x-coordina - overflow
-	lda #$03
-	sta sprite_num_buf
-	lda #$40 
-	sta sprite_x_lo
-	lda #$01
-	sta sprite_x_hi
-	jsr set_sprite_x_position
-	*/
 inc_lo:
 	// Keep the overflow flag
 	ldy sprite_num_buf
@@ -460,7 +449,6 @@ inc_lo:
 
 	jmp inc_spos_exit
 	
-
 inc_y_coordinate:
 
 	// load the value of the given sprite's y coordinate
@@ -486,6 +474,64 @@ decrement_sprite_position:
 	adc sprite_dir_buf
 	tax
 
+	and #%00000001
+	cmp #%00000001
+	beq dec_y_coordinate // we are decrementing a y-coordinate, so only care about single byte coordinates
+
+	///// Need to convert to hi and lo
+
+	// if overflow is not set for this sprite, it should remain so since we are incrementing
+	// in that case we can do simple decrement of low and store that
+	ldy sprite_num_buf
+	lda sprite_x_overflow_flags, y
+	cmp #$00
+	beq dec_lo
+
+	// If overflow is set, we need to check whether we are are crossing the boundary of 0 and have to set clear it
+
+	// Find diff between 0x00 and current value - this is how many pixels are left until underflow
+	lda $d000
+	
+	// if step we should increment with is smaller than this diff, we should keep overflow flag at 1 and decrement LSB
+	cmp sprite_step_buf
+	bcs dec_lo
+
+	//.break
+	// Otherwise, we are crossing the boundary. We should clear the hi bit and use the underflowed value as LSB
+	lda #$00
+	sta sprite_x_hi
+
+	// Decrement the LSBs
+	lda $d000, x
+	sec
+	sbc sprite_step_buf
+
+	//.break
+	sta sprite_x_lo
+
+	// Set the value
+	jsr set_sprite_x_position
+
+	jmp dec_spos_exit
+
+dec_lo:
+	// Keep the overflow flag
+	ldy sprite_num_buf
+	lda sprite_x_overflow_flags, y
+	sta sprite_x_hi
+
+	// Decrement the LSBs
+	lda $d000, x
+	sec
+	sbc sprite_step_buf
+	sta sprite_x_lo
+	
+	// Set the value
+	jsr set_sprite_x_position
+
+	jmp dec_spos_exit
+
+dec_y_coordinate:
 	// load the value of the given sprite's x or y coordinate
 	lda $d000, x
 	sec
@@ -493,6 +539,7 @@ decrement_sprite_position:
 
 	sta $d000, x
 
+dec_spos_exit:
 	rts
 
 cmp_player_collision:
