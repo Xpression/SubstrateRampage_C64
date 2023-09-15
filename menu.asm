@@ -81,17 +81,17 @@ menu2:	.text "                                        "
         .text "           press fire button!           "
       	.text "                                        "
     	.text "O                                      P"
-		.text " UCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCI "
+	.text " UCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCI "
 menu3:  .text " B                                    B "
-		.text " B                                    B "
-	    .text " B                                    B "
-	    .text " B   microsoft hackathon - sep 2023   B "
-	    .text " B      jakarl, jogron, simonhul      B "
-menu4:	.text " B                                    B "
-	    .text " B                                    B "
-	    .text " B                                    B "
-	    .text " JCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCK "
-	    .text "L                                      "; .byte $7a
+	.text " B                                    B "
+	.text " B   microsoft hackathon - sep 2023   B "
+	.text " B      jakarl, jogron, simonhul      B "
+	.text " B                                    B "
+menu4:	.text " B          sprites by ronja          B "
+	.text " B                                    B "
+	.text " B                                    B "
+	.text " JCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCK "
+	.text "L                                      "; .byte $7a
 
 draw_menu:
 	ldx #$00
