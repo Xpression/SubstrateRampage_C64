@@ -71,30 +71,6 @@
 	.byte %10010000,%01111100,%00010010
 	.byte %11111111
 
-	// Sprite four at $30c0			
-	.byte %00001111,%11111111,%11100000
-	.byte %00011111,%11111111,%11110000
-	.byte %00111111,%11111111,%11111000
-	.byte %00110111,%11111111,%11011000
-	.byte %01110011,%11111111,%10011100
-	.byte %01100001,%11111111,%00001100
-	.byte %01100000,%11111110,%00001100
-	.byte %01100000,%11111110,%00001100
-	.byte %01110000,%01111100,%00011100
-	.byte %00110000,%00111000,%00011000
-	.byte %00011100,%01111100,%01110000
-	.byte %00000111,%11101111,%11000000
-	.byte %00000011,%11000111,%10000000
-	.byte %00000001,%11111111,%00000000
-	.byte %00000000,%11111110,%00000000
-	.byte %00000000,%10101010,%00000000
-	.byte %00111100,%00000000,%01111000
-	.byte %01001010,%10101010,%10100100
-	.byte %10010010,%11111110,%10010010
-	.byte %10010010,%11111110,%10010010
-	.byte %10010000,%01111100,%00010010
-	.byte %11111111
-
 // These should be set if we exceed x == 255
 sprite_x_overflow_flags:
 	.byte 0, 0, 0, 0, 0, 0, 0, 0
@@ -359,31 +335,6 @@ init_sprite_three:
 
 	rts
 
-init_sprite_four:
-	// Set pointer to two one data
-	lda #$0c3 // 0x30c0 / 0x40 => 0xc3
-	sta sprite_four
-
-	// Enable sprite four
-	lda $d015
-	ora #%00001000
-	sta $d015 // sprite enable register
-
-	// Set position of sprite four (zero-indexed)
-	// x-coordina - overflow
-	lda #$03
-	sta sprite_num_buf
-	lda #$40 
-	sta sprite_x_lo
-	lda #$01
-	sta sprite_x_hi
-	jsr set_sprite_x_position
-
-	// y-coordinate
-	lda #$b0
-	sta $d007	// sprite two position y
-
-	rts
 
 // Subroutine that increments a sprites position.
 // 'sprite_num_buf' contains the 0-indexed sprite number [0-7]

@@ -26,7 +26,6 @@ game:
 	jsr init_sprite_one
 	jsr init_sprite_two
 	jsr init_sprite_three
-	jsr init_sprite_four
 	lda #$ff
 
 	// Debounce
