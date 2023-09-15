@@ -31,38 +31,48 @@ move_stars:
     ldx stars_x
     cpx #$ff            // check if x has underflowed
     bne !move_stars+    
-    ldx #$28            // reset at screen width
+    ldx #$2d            // reset at screen width
     stx stars_x
+
 !move_stars:
     lda #BLACK
     sta $d990,x
 
     dex
     cpx #$ff
-    beq !next_char++++
+    beq !move_stars+
+    cpx #$28            // compare this position to screen width
+    bcs !next_char+     // http://www.6502.org/tutorials/compare_beyond.html 
     lda #DARK_GRAY
     sta $d990,x
-!next_char:
 
+!next_char:
     dex
     cpx #$ff
-    beq !next_char+++
+    beq !move_stars+
+    cpx #$28
+    bcs !next_char+
     lda #GRAY
     sta $d990,x
-!next_char:
 
+!next_char:
     dex
     cpx #$ff
-    beq !next_char++
+    beq !move_stars+
+    cpx #$28
+    bcs !next_char+
     lda #LIGHT_GRAY
     sta $d990,x
-!next_char:
 
+!next_char:
     dex
     cpx #$ff
-    beq !next_char+
+    beq !move_stars+
+    cpx #$28
+    bcs !next_char+
     lda #WHITE
     sta $d990,x
-!next_char:
 
+!next_char:
+!move_stars:
     rts
