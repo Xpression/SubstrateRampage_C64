@@ -76,7 +76,6 @@ dec_player_health:
 inc_score:
     inc $0418           // increment first digit
     lda $0418           // read new digit back
-    sta player_score_c1
     cmp #$3a            // compare to petscii after '9'
     bne !inc_score+     // if no overflow, jump to return
 
@@ -85,7 +84,6 @@ inc_score:
 
     inc $0417           // increment second digit
     lda $0417           // read new digit back
-    sta player_score_c2
     cmp #$3a            // compare to petscii after '9'
     bne !inc_score+     // if no overflow, jump to return
 
@@ -94,13 +92,19 @@ inc_score:
 
     inc $0416           // increment third digit
     lda $0416           // read new digit back
-    sta player_score_c3
     cmp #$3a            // compare to petscii after '9'
     bne !inc_score+     // if no overflow, jump to return
 
     lda #$30            // we overflowed, so load '0'
     sta $0416           // and store in second digit
+
 !inc_score:
+    lda $0418
+    sta player_score_c1
+    lda $0417
+    sta player_score_c2
+    lda $0416
+    sta player_score_c3
     rts
 
 
