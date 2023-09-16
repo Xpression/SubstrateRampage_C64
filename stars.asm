@@ -2,6 +2,8 @@ stars_col:
     .byte $2d,$50,$3a
 stars_row:
     .byte $00,$05,$09
+stars_speed:
+    .byte %00000001,%00000010,%00000011
 row_address:
     .word $d800
     .word $d828
@@ -66,6 +68,15 @@ move_stars:
 
 move_current:
     ldx current_star
+
+#if HAS_SPEED
+    lda frame_lo
+    and stars_speed,x
+    bne !move_current+
+    rts
+#endif
+
+!move_current:
     lda stars_row,x
     asl                 // multiply by 2 since addresses are 2-bytes 
     tax
