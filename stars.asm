@@ -5,7 +5,6 @@ stars_row:
 stars_speed:
     .byte %00000001,%00000010,%00000011
 row_address:
-    .word $d800
     .word $d828
     .word $d850
     .word $d878
@@ -99,10 +98,10 @@ reset_current:
     lda stars_row,x     // reset row to something "random"
     clc
     adc #$13
-    cmp #$19
+    cmp #$18
     bcc !next_row+
     clc
-    sbc #$19
+    sbc #$18
 !next_row:
     sta stars_row,x
     rts
