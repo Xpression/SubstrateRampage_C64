@@ -1,8 +1,7 @@
 stars_col: 
-    .byte $00
+    .byte $2d,$50,$3a
 stars_row:
-    .byte $18
-
+    .byte $00,$05,$09
 row_address:
     .word $d800
     .word $d828
@@ -29,13 +28,13 @@ row_address:
     .word $db70
     .word $db98
     .word $dbc0
+current_star:
+    .byte $00
 
 
 init_stars:
-    lda #$00
-    sta stars_col
-
     ldx #$00
+    sta current_star
 
 !init_stars:
     lda #$a0
@@ -56,8 +55,19 @@ init_stars:
 
 
 move_stars:
-    lda stars_row
-    asl 
+    lda #$00
+    sta current_star
+    jsr move_current
+    inc current_star
+    jsr move_current
+    inc current_star
+    jsr move_current
+    rts
+
+move_current:
+    ldx current_star
+    lda stars_row,x
+    asl                 // multiply by 2 since addresses are 2-bytes 
     tax
     lda row_address,x   // bring row address into free zero page bytes:
     sta $00fb           // https://www.c64-wiki.com/wiki/Zeropage
@@ -65,23 +75,29 @@ move_stars:
     lda row_address,x   // to enable indirect-indexed addressing:
     sta $00fc           // https://www.c64-wiki.com/wiki/Indirect-indexed_addressing
 
-    dec stars_col         
-    ldy stars_col         
-    cpy #$ff            // check if x has underflowed
-    bne !move_stars+    
-    ldy #$2d            // reset at screen width
-    sty stars_col
+    ldx current_star
+    dec stars_col,x
+    lda stars_col,x
+    cmp #$ff            // check if x has underflowed
+    bne !move_current+
 
-    lda stars_row
+reset_current:
+    lda #$2d            // reset col to outside of screen
+    sta stars_col,x
+
+    lda stars_row,x     // reset row to something "random"
+    clc
     adc #$13
     cmp #$19
     bcc !next_row+
+    clc
     sbc #$19
 !next_row:
-    sta stars_row
+    sta stars_row,x
     rts
 
-!move_stars:
+!move_current:
+    ldy stars_col,x
     cpy #$28
     bcs !next_char+
 
@@ -91,7 +107,7 @@ move_stars:
 !next_char:
     dey
     cpy #$ff
-    beq !move_stars+
+    beq !move_current+
     cpy #$28            // compare this position to screen width
     bcs !next_char+     // http://www.6502.org/tutorials/compare_beyond.html 
     lda #DARK_GRAY
@@ -100,7 +116,7 @@ move_stars:
 !next_char:
     dey
     cpy #$ff
-    beq !move_stars+
+    beq !move_current+
     cpy #$28
     bcs !next_char+
     lda #GRAY
@@ -109,7 +125,7 @@ move_stars:
 !next_char:
     dey
     cpy #$ff
-    beq !move_stars+
+    beq !move_current+
     cpy #$28
     bcs !next_char+
     lda #LIGHT_GRAY
@@ -118,12 +134,12 @@ move_stars:
 !next_char:
     dey
     cpy #$ff
-    beq !move_stars+
+    beq !move_current+
     cpy #$28
     bcs !next_char+
     lda #WHITE
     sta ($fb),y
 
 !next_char:
-!move_stars:
+!move_current:
     rts
