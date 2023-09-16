@@ -205,14 +205,14 @@ hfp_exit:
 handle_left_pressed:
 
 	// Update this to set player x-speed to negative one (MSB set and LSB 0001)
-	lda #%10000001
+	lda #%10000010
 	sta object_speeds
 	rts
 
 handle_right_pressed:
 
 	// Update this to set player speed to positive one (MSB clear and LSB 0001)
-	lda #$01
+	lda #%00000010
 	sta object_speeds
 	rts
 
