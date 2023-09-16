@@ -1,11 +1,9 @@
 stars_col: 
-    .byte $2d,$50,$3a,$48,$33,$40,$37,$3a,$30
+    .byte $2d,$50,$3a,$48,$33,$40,$37,$3a
 stars_row:
-    .byte $00,$03,$05,$09,$0c,$0f,$12,$14,$17
+    .byte $00,$03,$05,$09,$0c,$0f,$12,$14
 stars_speed:
-    .byte %00000001,%00000010,%00000011
-    .byte %00000001,%00000010,%00000011
-    .byte %00000001,%00000010,%00000011
+    .byte $00,$01,$02,$03,$00,$01,$02,$03
 row_address:
     .word $d828
     .word $d850
@@ -32,6 +30,8 @@ row_address:
     .word $db98
     .word $dbc0
 current_star:
+    .byte $00
+frame_lo2:
     .byte $00
 
 
@@ -70,7 +70,7 @@ move_stars:
 
     inc current_star
     jsr move_current
-
+/*
     inc current_star
     jsr move_current
 
@@ -79,13 +79,21 @@ move_stars:
 
     inc current_star
     jsr move_current
+
+    inc current_star
+    jsr move_current
+    */
     rts
 
 move_current:
-    ldx current_star
     lda frame_counter
-    and stars_speed,x
-    bne !move_current+
+    and #%00000011      // get a number from 0-3
+    sta frame_lo2
+
+    ldx current_star
+    lda stars_speed,x
+    cmp frame_lo2
+    bcs !move_current+  // branch if speed is larger or equal
     rts
 
 !move_current:
@@ -137,6 +145,10 @@ reset_current:
     sta ($fb),y
 
 !next_char:
+    lda stars_speed,x
+    cmp #$00
+    beq !move_current+ 
+
     dey
     cpy #$ff
     beq !move_current+
@@ -146,6 +158,10 @@ reset_current:
     sta ($fb),y
 
 !next_char:
+    lda stars_speed,x
+    cmp #$01
+    beq !move_current+ 
+
     dey
     cpy #$ff
     beq !move_current+
@@ -155,6 +171,10 @@ reset_current:
     sta ($fb),y
 
 !next_char:
+    lda stars_speed,x
+    cmp #$02
+    beq !move_current+ 
+
     dey
     cpy #$ff
     beq !move_current+
