@@ -1,8 +1,10 @@
 stars_col: 
-    .byte $2d,$50,$3a
+    .byte $2d,$50,$3a,$48,$33,$40,$37,$3a,$30
 stars_row:
-    .byte $00,$05,$09
+    .byte $00,$03,$05,$09,$0c,$0f,$12,$14,$17
 stars_speed:
+    .byte %00000001,%00000010,%00000011
+    .byte %00000001,%00000010,%00000011
     .byte %00000001,%00000010,%00000011
 row_address:
     .word $d828
@@ -59,21 +61,32 @@ move_stars:
     lda #$00
     sta current_star
     jsr move_current
+
     inc current_star
     jsr move_current
+
+    inc current_star
+    jsr move_current
+
+    inc current_star
+    jsr move_current
+
+    inc current_star
+    jsr move_current
+
+    inc current_star
+    jsr move_current
+
     inc current_star
     jsr move_current
     rts
 
 move_current:
     ldx current_star
-
-#if HAS_SPEED
-    lda frame_lo
+    lda frame_counter
     and stars_speed,x
     bne !move_current+
     rts
-#endif
 
 !move_current:
     lda stars_row,x
