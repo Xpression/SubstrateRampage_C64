@@ -497,9 +497,7 @@ will_cross_zero:
 	// Must flip MSB
 	ldy sprite_num_buf
 	lda sprite_x_overflow_flags, y
-	sta tmp
-	jsr flip_flag // <-- flips a reg, 0x00 => 0x01, 0x01 => 0x00
-	lda tmp
+	eor #%00000001
 	sta sprite_x_hi
 
 dec_lo:
@@ -531,18 +529,3 @@ cmp_player_collision:
     and #$01  // mask to player only
     cmp #$01  // check collision
     rts
-
-flip_flag:
-	lda tmp
-	cmp #$00
-	beq return_one
-
-	lda #$00
-	sta tmp
-	rts
-
-return_one:
-	lda #$01
-	sta tmp
-
-	rts
